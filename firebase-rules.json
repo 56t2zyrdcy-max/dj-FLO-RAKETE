@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "DJ Flo Rakete - Realtime Database rules.",
+    "Replace DJ_UID_HERE (2 places) with the DJ's Google account UID.",
+    "How to find it: open admin.html, sign in with Google once (it will say",
+    "'not the DJ account' - that is expected), then Firebase Console >",
+    "Authentication > Users > copy the UID of that Google row.",
+    "Guests sign in anonymously; the DJ signs in with Google. A random Google",
+    "account gets PERMISSION_DENIED, which is exactly what locks the panel."
+  ],
+
+  "rules": {
+    "requests": {
+      ".read": "auth != null && (auth.uid === 'DJ_UID_HERE' || auth.token.firebase.sign_in_provider === 'anonymous')",
+      ".write": false,
+
+      "$reqId": {
+        ".write": "auth != null && ((!data.exists() && auth.token.firebase.sign_in_provider === 'anonymous' && newData.child('uid').val() === auth.uid) || auth.uid === 'DJ_UID_HERE')",
+        ".validate": "newData.hasChildren(['song','amount','tipStatus','createdAt','played'])",
+
+        "song":          { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 160" },
+        "amount":        { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },
+        "tipStatus":     { ".validate": "newData.isString() && (newData.val() === 'paid' || newData.val() === 'none')" },
+        "createdAt":     { ".validate": "newData.isNumber()" },
+        "played":        { ".validate": "newData.isBoolean()" },
+        "rejected":      { ".validate": "newData.isBoolean()" },
+        "uid":           { ".validate": "newData.isString()" },
+        "paypalOrderId": { ".validate": "newData.isString() && newData.val().length <= 64" },
+        "$other":        { ".validate": false }
+      }
+    },
+
+    "guardrail": {
+      "devices": {
+        ".read": "auth != null",
+        "$deviceKey": {
+          ".write": "auth != null",
+          ".validate": "newData.isNumber() || newData.hasChildren() || !newData.exists()"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Flo Rakete — Musik für deine Fete</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#08070A;
+    --curtain:#24070E;
+    --curtain-2:#3A0A14;
+    --magenta:#E4032E;
+    --cyan:#FF8A3D;
+    --gold:#FFC857;
+    --foam:#F7F4FA;
+    --muted:#B2A0A4;
+    --mint:#7CF5B6;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  html,body{ overflow-x:hidden; }
+  body{
+    margin:0;
+    min-height:100vh;
+    background:radial-gradient(ellipse at top, var(--curtain) 0%, var(--void) 52%);
+    font-family:'Inter', sans-serif;
+    color:var(--foam);
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 60px;
+    position:relative;
+  }
+
+  /* ---- signature: drifting stage lights behind everything ---- */
+  .stage-lights{ position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none; }
+  .stage-lights span{
+    position:absolute; width:52vmax; height:52vmax; border-radius:50%;
+    filter:blur(110px); opacity:0.16; mix-blend-mode:screen;
+  }
+  .stage-lights span:nth-child(1){ background:var(--magenta); top:-22%; left:-14%; animation:driftA 15s ease-in-out infinite; }
+  .stage-lights span:nth-child(2){ background:var(--cyan); bottom:-28%; right:-16%; animation:driftB 19s ease-in-out infinite; }
+  @keyframes driftA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(9%,7%) scale(1.18);}}
+  @keyframes driftB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-8%,-9%) scale(1.12);}}
+  @media (prefers-reduced-motion: reduce){ .stage-lights span{animation:none;} }
+
+  .app{ width:100%; max-width:420px; position:relative; z-index:1; }
+
+  .deck{ text-align:center; margin-bottom:26px; }
+
+  /* ---- signature: spinning vinyl + drop-the-needle tonearm ---- */
+  .turntable{ position:relative; width:132px; height:132px; margin:0 auto 16px; }
+  .vinyl{
+    width:100%; height:100%; border-radius:50%;
+    background-color:#15101C;
+    background-image:
+      repeating-radial-gradient(circle at center, rgba(255,255,255,0.05) 0 2px, rgba(0,0,0,0.2) 2px 5px);
+    box-shadow:0 14px 34px -12px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(255,255,255,0.06);
+    animation:spin 3.4s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .vinyl .label{
+    position:absolute; inset:30%; border-radius:50%;
+    background:radial-gradient(circle, #1A1122 55%, transparent 56%),
+               conic-gradient(from 180deg, var(--magenta), var(--cyan), var(--magenta));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,0.08);
+  }
+  .vinyl .label img{ width:74%; height:74%; display:block; }
+  .vinyl .hole{ position:absolute; inset:47%; border-radius:50%; background:var(--void); }
+  .tonearm{
+    position:absolute; top:-4px; right:-14px; width:78px; height:9px;
+    transform-origin:88% 25%;
+    transform:rotate(-34deg);
+    transition:transform 0.55s cubic-bezier(.34,1.7,.64,1);
+  }
+  .tonearm::before{
+    content:""; position:absolute; inset:0; border-radius:4px;
+    background:linear-gradient(90deg, var(--gold), #B8873A);
+    box-shadow:0 3px 8px rgba(0,0,0,0.5);
+  }
+  .tonearm::after{
+    content:""; position:absolute; left:-5px; top:-5px; width:14px; height:14px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 0 5px rgba(255,200,87,0.14);
+  }
+  .tonearm.dropped{ transform:rotate(-4deg); }
+  @media (prefers-reduced-motion: reduce){
+    .vinyl{ animation:none; }
+    .tonearm{ transition:none; }
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:3px;
+    color:var(--magenta); margin:0 0 8px; text-transform:uppercase;
+  }
+  .eyebrow .dot{
+    display:inline-block; width:6px;height:6px; border-radius:50%;
+    background:var(--magenta); margin-right:6px; animation:pulse 1.6s ease-in-out infinite;
+  }
+  #langSwitch{
+    position:fixed; top:14px; right:14px; z-index:40;
+    width:46px; height:33px; border-radius:8px; overflow:hidden; padding:0;
+    border:1px solid rgba(247,244,250,0.35); background:rgba(11,0,20,0.55);
+    cursor:pointer; opacity:.85; transition:all .15s ease;
+  }
+  #langSwitch:hover{ opacity:1; border-color:var(--cyan); }
+  #langSwitch svg{ width:100%; height:100%; display:block; }
+
+  /* ---- welcome / language gate ---- */
+  #welcomeGate{
+    position:fixed; inset:0; z-index:60;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    background:radial-gradient(ellipse at top, var(--curtain) 0%, var(--void) 72%);
+    transition:opacity .45s ease, visibility .45s ease;
+  }
+  #welcomeGate.hide{ opacity:0; pointer-events:none; visibility:hidden; }
+  .welcome-card{ text-align:center; max-width:400px; width:100%; }
+  .welcome-card .wlogo{
+    width:172px; height:172px; margin:0 auto 16px; display:block;
+    filter:drop-shadow(0 0 34px rgba(255,46,136,0.4));
+  }
+  .welcome-dj{
+    font-family:'Anton', sans-serif; font-size:44px; letter-spacing:1px; margin:0 0 14px;
+    background:linear-gradient(100deg, var(--foam) 40%, var(--cyan) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  #welcomeWord{
+    font-family:'Anton', sans-serif; font-size:34px; color:var(--gold);
+    min-height:48px; margin:0; opacity:1; transition:opacity .3s ease;
+  }
+  .welcome-cap{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--muted); margin:24px 0 14px;
+  }
+  .welcome-flags{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .wflag{
+    width:58px; height:40px; border-radius:9px; overflow:hidden; padding:0; cursor:pointer;
+    border:1px solid rgba(247,244,250,0.35); background:none; transition:all .15s ease;
+  }
+  .wflag svg{ width:100%; height:100%; display:block; }
+  .wflag:hover, .wflag:focus-visible{ transform:scale(1.1); border-color:var(--cyan); }
+
+  .langbar{ display:flex; justify-content:center; gap:8px; margin:0 0 18px; }
+  .lang{
+    width:38px; height:26px; padding:0; border-radius:6px; overflow:hidden; cursor:pointer;
+    border:1px solid rgba(247,244,250,0.3); background:none; opacity:.5; transition:all .15s ease;
+  }
+  .lang svg{ width:100%; height:100%; display:block; }
+  .lang:hover{ opacity:.85; }
+  .lang.active{ opacity:1; outline:2px solid var(--cyan); outline-offset:1px; }
+  .social{ display:flex; align-items:center; justify-content:center; gap:10px; margin:2px 0 12px; }
+  .social-cap{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--magenta); margin-right:4px;
+  }
+  .soc{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid rgba(247,244,250,0.28);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--foam); text-decoration:none; transition:all .15s ease;
+  }
+  .soc:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-1px); }
+  .soc svg{ width:17px; height:17px; fill:currentColor; }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .deck h1{
+    font-family:'Anton', sans-serif; font-weight:400; font-size:46px;
+    letter-spacing:1px; margin:0 0 8px;
+    background:linear-gradient(100deg, var(--foam) 40%, var(--cyan) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .deck .sub{ color:var(--muted); font-size:14px; margin:0 0 2px; }
+  .deck .note{
+    display:block; max-width:360px; margin:10px auto 0;
+    background:rgba(255,200,87,0.12);
+    border:1px solid rgba(255,200,87,0.5);
+    border-radius:10px; padding:9px 13px;
+    color:var(--gold); font-size:13px; font-weight:600; line-height:1.5;
+  }
+
+  .ticket{
+    position:relative; background:var(--curtain); border-radius:var(--radius);
+    border:1px solid rgba(255,46,136,0.28);
+    box-shadow:0 22px 50px -20px rgba(0,0,0,0.85), 0 0 44px -14px rgba(255,46,136,0.2);
+    overflow:visible;
+  }
+  .ticket-top, .ticket-bottom{ padding:24px 22px; }
+  label{
+    display:block; font-family:'JetBrains Mono', monospace; font-size:11px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:10px;
+  }
+  #songInput{
+    width:100%; background:rgba(247,244,250,0.06); border:1px solid rgba(247,244,250,0.15);
+    border-radius:10px; padding:14px 14px; font-size:16px; color:var(--foam); font-family:'Inter', sans-serif;
+  }
+  #songInput:focus{ outline:2px solid var(--cyan); outline-offset:1px; border-color:transparent; }
+  #songInput::placeholder{color:var(--muted);}
+  .field{ margin-bottom:18px; }
+  .field:last-child{ margin-bottom:0; }
+  .hint{ font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.45; }
+
+  /* ---- cooldown notice ---- */
+  .cooldown{
+    display:none; align-items:center; gap:10px;
+    background:rgba(255,200,87,0.10); border:1px solid rgba(255,200,87,0.38);
+    border-radius:12px; padding:12px 14px; margin-bottom:12px;
+    font-size:12.5px; line-height:1.5; color:var(--foam);
+  }
+  .cooldown.show{ display:flex; }
+  .cooldown.reject{
+    background:rgba(255,46,136,0.10); border-color:rgba(255,46,136,0.5);
+  }
+  .reject-x{
+    background:none; border:none; color:var(--muted); cursor:pointer;
+    font-size:15px; padding:2px 4px; line-height:1; flex-shrink:0;
+  }
+  .reject-x:hover{ color:var(--foam); }
+
+  /* ---- DJ reaction pop ---- */
+  #reactionPop{
+    position:fixed; inset:0; z-index:70; display:none;
+    align-items:center; justify-content:center; pointer-events:none;
+  }
+  #reactionPop.show{ display:flex; }
+  .reaction-card{ text-align:center; animation:reactPop .6s cubic-bezier(.2,1.6,.4,1); }
+  #reactionEmoji{
+    font-size:110px; line-height:1.1;
+    filter:drop-shadow(0 0 34px rgba(255,46,136,0.65));
+    animation:reactBeat 1s ease-in-out infinite .6s;
+  }
+  #reactionText{
+    font-family:'Anton', sans-serif; font-size:26px; color:var(--gold);
+    margin-top:10px; text-shadow:0 2px 14px rgba(0,0,0,0.6);
+  }
+  @keyframes reactPop{ 0%{transform:scale(0); opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1); opacity:1;} }
+  @keyframes reactBeat{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+  @media (prefers-reduced-motion: reduce){ .reaction-card, #reactionEmoji{ animation:none; } }
+  .cooldown .clock{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:17px;
+    color:var(--gold); white-space:nowrap;
+  }
+
+  .perforation{ position:relative; height:0; border-top:2px dashed rgba(247,244,250,0.2); }
+  .perforation::before, .perforation::after{
+    content:""; position:absolute; top:-11px; width:22px;height:22px; border-radius:50%;
+    background:radial-gradient(ellipse at top, var(--curtain) 0%, var(--void) 52%);
+  }
+  .perforation::before{left:-11px;}
+  .perforation::after{right:-11px;}
+
+  .tip-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
+  .tip-btn{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:14px; padding:12px 4px;
+    border-radius:10px; border:1px solid rgba(247,244,250,0.18); background:transparent;
+    color:var(--foam); cursor:pointer; transition:all 0.15s ease;
+  }
+  .tip-btn:hover{border-color:var(--cyan);}
+  .tip-btn.active{
+    background:linear-gradient(120deg, var(--magenta), var(--cyan));
+    border-color:transparent; color:var(--void);
+  }
+  .tip-btn:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+
+  #customAmt{
+    width:100%; background:rgba(247,244,250,0.06); border:1px solid rgba(247,244,250,0.15);
+    border-radius:10px; padding:12px 14px; font-family:'JetBrains Mono', monospace; font-size:15px;
+    color:var(--foam); margin-bottom:14px;
+  }
+  #customAmt:focus{outline:2px solid var(--cyan); outline-offset:1px; border-color:transparent;}
+
+  .stamp-row{ display:flex; align-items:center; justify-content:space-between; }
+  .stamp-label{ font-size:12px; color:var(--muted); }
+  .stamp{
+    font-family:'Anton', sans-serif; font-weight:400; font-size:28px; color:var(--gold);
+    border:2px solid var(--gold); border-radius:8px; padding:2px 14px; transform:rotate(-3deg); letter-spacing:1px;
+  }
+
+  .actions{margin-top:20px;}
+  #paypal-button-container{margin-bottom:12px; min-height:45px;}
+  .free-btn{
+    width:100%; background:transparent; border:1px solid rgba(247,244,250,0.25); color:var(--foam);
+    padding:14px; border-radius:12px; font-family:'Inter', sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .free-btn:hover{border-color:var(--cyan);}
+  .free-btn:focus-visible{outline:2px solid var(--cyan); outline-offset:2px;}
+  .free-btn:disabled{opacity:0.5; cursor:not-allowed;}
+
+  #statusMsg{ text-align:center; margin-top:16px; font-size:13px; min-height:18px; }
+  #statusMsg.error{color:var(--magenta);}
+  #statusMsg.success{color:var(--mint);}
+
+  .config-warning{
+    background:rgba(255,46,136,0.12);
+    border:1px solid rgba(255,46,136,0.4);
+    color:var(--foam);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:12.5px;
+    line-height:1.5;
+    margin-bottom:18px;
+  }
+  .config-warning b{ color:var(--magenta); }
+</style>
+</head>
+<body>
+
+<div class="stage-lights" aria-hidden="true"><span></span><span></span></div>
+
+<button id="langSwitch" type="button" aria-label="Sprache ändern · Change language"></button>
+
+<div id="reactionPop" aria-live="polite">
+  <div class="reaction-card">
+    <div id="reactionEmoji"></div>
+    <div id="reactionText"></div>
+  </div>
+</div>
+
+<div id="welcomeGate" class="hide" aria-hidden="true">
+  <div class="welcome-card">
+    <img class="wlogo" id="welcomeLogo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2OTAgMzIwIiB3aWR0aD0iNjkwIiBoZWlnaHQ9IjMyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJESiBGbG8gUmFrZXRlIOKAlCBNdXNpayBmw7xyIGRlaW5lIEZldGUiPgogIDwhLS0gcmVkIGxvd2VyY2FzZSBkIC0tPgogIDxwYXRoIGZpbGw9IiNFNDAzMkUiIGQ9Ik0xNTIgNDRoMzZ2MTc2aC0zNnYtMTljLTEyIDE0LTI4IDIyLTQ4IDIyLTQwIDAtNjktMzItNjktNzZzMjktNzYgNjktNzZjMjAgMCAzNiA4IDQ4IDIyVjQ0em0tNDIgNzljLTIxIDAtMzcgMTctMzcgNDJzMTYgNDIgMzcgNDIgMzctMTcgMzctNDItMTYtNDItMzctNDJ6Ii8+CiAgPCEtLSBqIC0tPgogIDxwYXRoIGZpbGw9IiNFNDAzMkUiIGQ9Ik0yMzggMTAwaDM0djExMWMwIDM2LTIwIDU4LTU1IDYxbC00LTMxYzE4LTMgMjUtMTMgMjUtMzJWMTAweiIvPgogIDxjaXJjbGUgZmlsbD0iI0U0MDMyRSIgY3g9IjI1NSIgY3k9IjYxIiByPSIxOSIvPgogIDwhLS0gZmFkZXIgbGluZXMgKyBtYXJrZXJzIC0tPgogIDxnIHN0cm9rZT0iI0U0MDMyRSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuOCI+CiAgICA8bGluZSB4MT0iMjEyIiB5MT0iMjAiIHgyPSIyMTIiIHkyPSIyMDYiLz4KICAgIDxsaW5lIHgxPSIyMzUiIHkxPSIzNCIgeDI9IjIzNSIgeTI9IjIyMCIvPgogIDwvZz4KICA8ZyBmaWxsPSIjRTQwMzJFIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iMjEyLDc2IDIyMyw5MCAyMTIsMTA0IDIwMSw5MCIvPgogICAgPHBvbHlnb24gcG9pbnRzPSIyMTIsMTQ2IDIyMywxNjAgMjEyLDE3NCAyMDEsMTYwIi8+CiAgICA8cG9seWdvbiBwb2ludHM9IjIzNSwxODYgMjQ2LDIwMCAyMzUsMjE0IDIyNCwyMDAiLz4KICA8L2c+CiAgPCEtLSBGTCAtLT4KICA8dGV4dCB4PSIyOTIiIHk9IjE1MiIgZmlsbD0iI0Y3RjRGQSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIgogICAgICAgIGZvbnQtc2l6ZT0iMTIwIiB0ZXh0TGVuZ3RoPSIxOTYiIGxlbmd0aEFkanVzdD0ic3BhY2luZ0FuZEdseXBocyI+Rkw8L3RleHQ+CiAgPCEtLSB2aW55bCBPIHdpdGggaGVhZHBob25lcyAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NjIsMTAwKSI+CiAgICA8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNGN0Y0RkEiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZD0iTS02OCA2YTY4IDY4IDAgMCAxIDEzNiAwIi8+CiAgICA8cmVjdCBmaWxsPSIjRjdGNEZBIiB4PSItNzgiIHk9IjAiIHdpZHRoPSIyMSIgaGVpZ2h0PSIzOCIgcng9IjEwIi8+CiAgICA8cmVjdCBmaWxsPSIjRjdGNEZBIiB4PSI1NyIgeT0iMCIgd2lkdGg9IjIxIiBoZWlnaHQ9IjM4IiByeD0iMTAiLz4KICAgIDxjaXJjbGUgZmlsbD0iI0Y3RjRGQSIgcj0iNTQiLz4KICAgIDxjaXJjbGUgZmlsbD0iIzBBMEEwQyIgcj0iMzUiLz4KICAgIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzBBMEEwQyIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjUiPjxjaXJjbGUgcj0iNDYiLz48Y2lyY2xlIHI9IjQxIi8+PC9nPgogICAgPGNpcmNsZSBmaWxsPSIjRjdGNEZBIiByPSIxMSIvPgogICAgPGNpcmNsZSBmaWxsPSIjMEEwQTBDIiByPSIzLjUiLz4KICA8L2c+CiAgPCEtLSBSQUtFVEUgLS0+CiAgPHRleHQgeD0iMjkyIiB5PSIyNTAiIGZpbGw9IiNGN0Y0RkEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIKICAgICAgICBmb250LXNpemU9Ijg4IiB0ZXh0TGVuZ3RoPSIzMjQiIGxlbmd0aEFkanVzdD0ic3BhY2luZ0FuZEdseXBocyI+UkFLRVRFPC90ZXh0PgogIDwhLS0gdGFnbGluZSAtLT4KICA8dGV4dCB4PSIyOTQiIHk9IjI5MCIgZmlsbD0iI0U0MDMyRSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiCiAgICAgICAgZm9udC1zaXplPSIyNiIgdGV4dExlbmd0aD0iMzIwIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiPk1VU0lLIEbDnFIgREVJTkUgRkVURTwvdGV4dD4KPC9zdmc+Cg==" alt="DJ Flo Rakete">
+    <h2 class="welcome-dj">DJ Flo Rakete</h2>
+    <p id="welcomeWord">Willkommen</p>
+    <p class="welcome-cap">Sprache wählen · Choose language</p>
+    <div class="welcome-flags">
+      <button type="button" class="wflag" data-lang="de" aria-label="Deutsch"><svg viewBox="0 0 60 40"><rect width="60" height="40" fill="#000"/><rect y="13.3" width="60" height="26.7" fill="#DD0000"/><rect y="26.6" width="60" height="13.4" fill="#FFCE00"/></svg></button>
+      <button type="button" class="wflag" data-lang="en" aria-label="English"><svg viewBox="0 0 60 40"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#fff" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V40 M0,20 H60" stroke="#fff" stroke-width="12"/><path d="M30,0 V40 M0,20 H60" stroke="#C8102E" stroke-width="7"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="deck">
+    <div class="turntable" aria-hidden="true">
+      <div class="vinyl">
+        <div class="label"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJESiBGbG8gUmFrZXRlIj4KICA8dGV4dCB4PSIxMDAiIHk9Ijg0IiBmaWxsPSIjRjdGNEZBIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIEFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiCiAgICAgICAgZm9udC1zaXplPSI1OCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgdGV4dExlbmd0aD0iMTIwIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiPkZMTzwvdGV4dD4KICA8cmVjdCB4PSI0MCIgeT0iOTYiIHdpZHRoPSIxMjAiIGhlaWdodD0iNiIgcng9IjMiIGZpbGw9IiNFNDAzMkUiLz4KICA8dGV4dCB4PSIxMDAiIHk9IjE1MiIgZmlsbD0iI0Y3RjRGQSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIgogICAgICAgIGZvbnQtc2l6ZT0iMzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHRleHRMZW5ndGg9IjEyOCIgbGVuZ3RoQWRqdXN0PSJzcGFjaW5nQW5kR2x5cGhzIj5SQUtFVEU8L3RleHQ+Cjwvc3ZnPgo=" alt="DJ Flo Rakete logo"></div>
+      </div>
+      <div class="tonearm" id="tonearm"></div>
+    </div>
+    <h1>DJ Flo Rakete</h1>
+    <div class="social" aria-label="Follow DJ Flo Rakete">
+      <span class="social-cap">Follow</span>
+      <a class="soc" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1-3.2 0-3.6 0-4.8-.1-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 4 4 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8A6.2 6.2 0 1 0 18.2 12 6.2 6.2 0 0 0 12 5.8zm0 10.2A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm6.4-11.9a1.4 1.4 0 1 0 1.4 1.4 1.4 1.4 0 0 0-1.4-1.4z"/></svg>
+      </a>
+      <a class="soc" href="#" target="_blank" rel="noopener" aria-label="Spotify">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0a12 12 0 1 0 12 12A12 12 0 0 0 12 0zm5.5 17.3a.75.75 0 0 1-1 .25 11.6 11.6 0 0 0-8.8-1.1.75.75 0 0 1-.35-1.46 13.1 13.1 0 0 1 9.95 1.31.75.75 0 0 1 .2 1zm1.5-3.35a.94.94 0 0 1-1.29.31 14.6 14.6 0 0 0-10.63-1.32.94.94 0 1 1-.47-1.82 16.5 16.5 0 0 1 12.05 1.54.94.94 0 0 1 .34 1.29zm.13-3.44A17.5 17.5 0 0 0 6.4 9.1a1.13 1.13 0 1 1-.63-2.17 19.8 19.8 0 0 1 14.06 1.72 1.13 1.13 0 0 1-1.1 1.96z"/></svg>
+      </a>
+      <a class="soc" href="#" target="_blank" rel="noopener" aria-label="Apple Music">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.46 2.21-1.21 3.03-.79.87-2.06 1.54-3.08 1.46a3.5 3.5 0 0 1-.03-.44c0-1.09.48-2.22 1.22-3.01.38-.42.88-.78 1.48-1.05.6-.27 1.17-.42 1.6-.45 0 .15.02.3.02.46zm3.85 16.47c-.55 1.28-.82 1.85-1.53 2.98-.99 1.58-2.39 3.55-4.12 3.56-1.54.02-1.94-1.01-4.03-1-2.09.01-2.53 1.02-4.07 1.01-1.73-.02-3.05-1.79-4.04-3.37C-.35 16.66-.64 11.47 1.07 8.71c1.21-1.96 3.13-3.11 4.93-3.11 1.83 0 2.98 1.01 4.49 1.01 1.47 0 2.36-1.01 4.48-1.01 1.6 0 3.3.87 4.51 2.38-3.96 2.17-3.32 7.83.73 9.92z"/></svg>
+      </a>
+      <a class="soc" href="#" target="_blank" rel="noopener" aria-label="SoundCloud">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="1" y="11.5" width="1.6" height="5.5" rx="0.8"/><rect x="3.7" y="10" width="1.6" height="7" rx="0.8"/><rect x="6.4" y="8.5" width="1.6" height="8.5" rx="0.8"/><rect x="9.1" y="9.3" width="1.6" height="7.7" rx="0.8"/><path d="M12.2 17h5.9a4.15 4.15 0 0 0 .62-8.26A5.65 5.65 0 0 0 12.2 6.6z"/></g></svg>
+      </a>
+      <a class="soc" href="#" target="_blank" rel="noopener" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.5 15.6V8.4L15.8 12z"/></svg>
+      </a>
+    </div>
+    <p class="sub" id="subLine">Sag dem DJ, was als Nächstes laufen soll.</p>
+    <p class="note" id="noteLine">Wünsche werden gespielt, wenn sie zur Stimmung passen.</p>
+  </div>
+
+  <div id="configWarning" class="config-warning" hidden>
+    ⚠️ <b>Setup incomplete:</b> Firebase and/or PayPal aren't connected yet. Requests won't be saved and payments won't work until the real config is pasted in. This message disappears automatically once it's set up.
+  </div>
+
+  <form class="ticket" id="requestForm">
+    <div class="ticket-top">
+      <div class="field">
+        <label for="songInput" id="songLabel">Artist &amp; Song</label>
+        <input id="songInput" name="songInput" placeholder="z. B. Fred again.. – Marea" autocomplete="off" required>
+        <p class="hint" id="hintLine">Alle 30 Minuten eine kostenlose Anfrage. Mit Trinkgeld geht dein Song sofort durch.</p>
+      </div>
+    </div>
+
+    <div class="perforation" aria-hidden="true"></div>
+
+    <div class="ticket-bottom">
+      <label id="tipLabel">Add a tip (optional)</label>
+      <div class="tip-grid" role="group" aria-label="Tip amount">
+        <button type="button" class="tip-btn" data-amt="0">€0</button>
+        <button type="button" class="tip-btn" data-amt="10">€10</button>
+        <button type="button" class="tip-btn" data-amt="20">€20</button>
+        <button type="button" class="tip-btn" id="customToggle" data-amt="custom">Custom</button>
+      </div>
+      <input type="number" id="customAmt" min="10" step="1" placeholder="€ amount — min €10" hidden>
+
+      <div class="stamp-row">
+        <span class="stamp-label" id="stampLabel">Selected tip</span>
+        <span class="stamp" id="amountStamp">€0</span>
+      </div>
+    </div>
+  </form>
+
+  <div class="actions">
+    <div class="cooldown" id="cooldownBox">
+      <span class="clock" id="cooldownClock">30:00</span>
+      <span id="cooldownText">This phone already sent a free request. You can send the next one when the clock runs out — or add a tip (min €10) to send right away.</span>
+    </div>
+    <div class="cooldown reject" id="rejectBox" role="alert">
+      <span id="rejectText"></span>
+      <button type="button" id="rejectClose" class="reject-x" aria-label="Close">✕</button>
+    </div>
+    <div id="paypal-button-container"></div>
+    <button type="button" class="free-btn" id="sendFreeBtn">Anfrage senden</button>
+    <p id="statusMsg" role="status"></p>
+  </div>
+</div>
+
+<!--
+  ======================== FIREBASE SETUP ========================
+  1. Go to https://console.firebase.google.com and create a free project.
+  2. In the project, click "Build > Realtime Database" and create a database
+     (start in test mode for now — lock it down later, see note at bottom).
+  3. Go to Project Settings > General > "Your apps" > Add app > Web (</>).
+  4. Copy the firebaseConfig object it gives you and paste it below,
+     replacing the placeholder.
+  5. Do the exact same paste in admin.html so both pages talk to the
+     same database.
+  ==================================================================
+-->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script>
+  // Public reCAPTCHA v3 site key for App Check. This belongs in the page
+  // source; the matching secret key lives only in the Firebase Console.
+  const RECAPTCHA_SITE_KEY = "";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  let db = null;
+  let firebaseReady = false;
+
+  // Guests sign in anonymously. The database rules require a signed-in
+  // identity before a request may be created, which is what stops random
+  // scripts from writing into (or reading) the queue.
+  let authReady = Promise.resolve(false);
+
+  const isPlaceholder = Object.values(firebaseConfig).some(v => typeof v === 'string' && v.includes('YOUR_'));
+  if (!isPlaceholder){
+    try{
+      firebase.initializeApp(firebaseConfig);
+
+      // App Check must be activated before any other Firebase call.
+      if (firebase.appCheck && RECAPTCHA_SITE_KEY){
+        try{ firebase.appCheck().activate(RECAPTCHA_SITE_KEY, true); }
+        catch(e){ console.warn('App Check not active:', e && e.message); }
+      }
+
+      db = firebase.database();
+      firebaseReady = true;
+
+      authReady = new Promise((resolve) => {
+        let settled = false;
+        const done = (ok) => { if (!settled){ settled = true; resolve(ok); } };
+        firebase.auth().onAuthStateChanged((user) => { if (user) done(true); });
+        firebase.auth().signInAnonymously().catch((e) => {
+          console.error('Anonymous sign-in failed:', e);
+          done(false);
+        });
+        // Never hang the send button forever on a flaky ship connection.
+        setTimeout(() => done(!!firebase.auth().currentUser), 12000);
+      });
+    }catch(e){
+      console.error('Firebase init failed:', e);
+    }
+  } else {
+    console.warn('Firebase config still has placeholder values — requests will not be saved.');
+  }
+</script>
+
+<!--
+  PayPal Smart Buttons SDK.
+  Replace YOUR_PAYPAL_CLIENT_ID with your own PayPal REST app Client ID
+  (get one at https://developer.paypal.com/dashboard/applications).
+-->
+<script>
+  const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID";
+  window.__paypalReady = false;
+  window.__paypalLocale = '';
+  // The PayPal button is rendered by PayPal's own SDK, which guesses the
+  // language from the browser unless told otherwise. We tell it — and when
+  // the guest switches language, the SDK is reloaded in that language.
+  const PAYPAL_LOCALES = { de:'de_DE', en:'en_GB', tr:'tr_TR', es:'es_ES', nl:'nl_NL' };
+  window.__loadPaypalSdk = function(lang){
+    if (PAYPAL_CLIENT_ID.includes('YOUR_')){
+      console.warn('PayPal client ID still has a placeholder value — payments are disabled.');
+      return;
+    }
+    const locale = PAYPAL_LOCALES[lang] || 'de_DE';
+    if (window.__paypalLocale === locale) return;   // already this language
+    window.__paypalLocale = locale;
+    window.__paypalReady = false;
+    const old = document.getElementById('paypal-sdk');
+    if (old) old.remove();
+    try{ delete window.paypal; }catch(e){ window.paypal = undefined; }
+    const s = document.createElement('script');
+    s.id = 'paypal-sdk';
+    s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PAYPAL_CLIENT_ID)
+          + '&currency=EUR&disable-funding=sepa&locale=' + locale;
+    s.onload = () => { window.__paypalReady = true; window.dispatchEvent(new Event('paypalsdkready')); };
+    s.onerror = () => { console.error('PayPal SDK failed to load.'); };
+    document.head.appendChild(s);
+  };
+  (function(){
+    let lang = 'de';
+    try{
+      lang = localStorage.getItem('florakete.lang')
+           || ((navigator.language || 'de').toLowerCase().startsWith('de') ? 'de' : 'en');
+    }catch(e){}
+    window.__loadPaypalSdk(lang);
+  })();
+</script>
+
+<script>
+(function(){
+  const songInput = document.getElementById('songInput');
+  const tipButtons = document.querySelectorAll('.tip-btn');
+  const customAmt = document.getElementById('customAmt');
+  const amountStamp = document.getElementById('amountStamp');
+  const statusMsg = document.getElementById('statusMsg');
+  const sendFreeBtn = document.getElementById('sendFreeBtn');
+  const paypalContainer = document.getElementById('paypal-button-container');
+  const configWarning = document.getElementById('configWarning');
+  const tonearm = document.getElementById('tonearm');
+  const cooldownBox = document.getElementById('cooldownBox');
+  const cooldownClock = document.getElementById('cooldownClock');
+
+  let selectedAmount = 0;
+
+  // ===================== LANGUAGES =====================
+  const I18N = {
+    de: {
+      reactionMsg: "Vom DJ für dich!",
+      sub: 'Wünsch dir deinen Song — ich leg ihn für dich auf.',
+      note: 'Wünsche werden in der Reihenfolge gespielt, die zur Stimmung passt — nicht jeder Song passt in jeden Moment.',
+      songLabel: 'Interpret & Song', songPh: 'z. B. Fred again.. – Marea',
+      hint: 'Alle 30 Minuten eine kostenlose Anfrage. Mit Trinkgeld geht dein Song sofort durch.',
+      tipLabel: 'Trinkgeld hinzufügen (optional)', custom: 'Anderer Betrag', customPh: '€ Betrag — min. €10',
+      selectedTip: 'Gewähltes Trinkgeld',
+      cooldownText: 'Dieses Handy hat schon eine kostenlose Anfrage gesendet. Wenn die Uhr abläuft, geht die nächste — oder sende mit Trinkgeld (min. €10) sofort.',
+      sendFree: 'Anfrage senden', sendFreeAlt: 'Oder ohne Trinkgeld senden',
+      errSong: 'Bitte zuerst Interpret und Songtitel eingeben.',
+      dupSong: 'Dieser Song steht schon in der Liste. Wähle einen anderen.',
+      cooldownMsg: 'Dieses Handy hat schon eine kostenlose Anfrage — noch {left}, oder sende mit Trinkgeld (min. €10) sofort.',
+      checking: 'Prüfe…', sending: 'Anfrage wird gesendet…', sent: 'Anfrage gesendet. Der DJ hat sie 🎧',
+      wrong: 'Etwas ist schiefgelaufen. Versuch es nochmal.',
+      setup: 'Die Einrichtung ist noch nicht fertig — die Anfrage konnte nicht gespeichert werden.',
+      chooseAmt: 'Wähle einen Trinkgeld-Betrag oder sende ohne Trinkgeld.',
+      minTip: 'Mindest-Trinkgeld ist €10.',
+      processing: 'Wird verarbeitet…', paidSent: 'Trinkgeld erhalten — Anfrage gesendet 🎉',
+      paidSaveFail: 'Zahlung war erfolgreich, aber die Anfrage wurde nicht gespeichert. Zeig diesen Bildschirm dem DJ.',
+      payFail: 'Zahlung fehlgeschlagen. Versuch es nochmal oder sende ohne Trinkgeld.',
+      payCancel: 'Zahlung abgebrochen.',
+      rejected: 'Sorry — „{song}“ passt heute leider nicht ins Set oder ist nicht dabei. Wünsch dir gern einen anderen Song, deine Wartezeit wurde zurückgesetzt.',
+      canSendNow: 'Du kannst jetzt eine neue Anfrage senden 🎧'
+    },
+    en: {
+      reactionMsg: "From the DJ, for you!",
+      sub: "Wish for your song — I'll spin it for you.",
+      note: "Requests are played when they fit the vibe — not every song fits every moment.",
+      songLabel: 'Artist & Song', songPh: 'e.g. Fred again.. – Marea',
+      hint: 'One free request every 30 minutes. With a tip your song goes through right away.',
+      tipLabel: 'Add a tip (optional)', custom: 'Custom', customPh: '€ amount — min €10',
+      selectedTip: 'Selected tip',
+      cooldownText: 'This phone already sent a free request. You can send the next one when the clock runs out — or add a tip (min €10) to send right away.',
+      sendFree: 'Send request', sendFreeAlt: 'Or send without a tip',
+      errSong: 'Add the artist and song name first.',
+      dupSong: "That song is already in tonight's queue. Pick another one.",
+      cooldownMsg: 'This phone already sent a free request — {left} left, or add a tip (min €10) to send now.',
+      checking: 'Checking…', sending: 'Sending your request…', sent: 'Request sent. The DJ has it now 🎧',
+      wrong: 'Something went wrong. Try again.',
+      setup: "Setup isn't finished yet — this request could not be saved.",
+      chooseAmt: 'Choose a tip amount, or send without a tip.',
+      minTip: 'Minimum tip is €10.',
+      processing: 'Processing…', paidSent: 'Tip received — request sent 🎉',
+      paidSaveFail: 'Payment went through, but saving the request failed. Show this screen to the DJ.',
+      payFail: 'Payment failed. Try again or send without a tip.',
+      payCancel: 'Payment cancelled.',
+      rejected: 'Sorry — "{song}" doesn\'t fit tonight\'s set or isn\'t available. Feel free to pick another song — your waiting time has been reset.',
+      canSendNow: 'You can send a new request now 🎧'
+    },
+  };
+  let LANG = 'de';
+  try{
+    const saved = localStorage.getItem('florakete.lang');
+    if (saved) LANG = saved;
+    else LANG = (navigator.language || 'de').toLowerCase().startsWith('de') ? 'de' : 'en';
+  }catch(e){}
+  if (!I18N[LANG]) LANG = 'de';
+  function T(){ return I18N[LANG]; }
+
+  function applyLang(l){
+    if (!I18N[l]) l = 'de';
+    LANG = l;
+    try{ localStorage.setItem('florakete.lang', l); }catch(e){}
+    document.documentElement.lang = l;
+    const t = I18N[l];
+    document.getElementById('subLine').textContent = t.sub;
+    document.getElementById('noteLine').textContent = t.note;
+    document.getElementById('songLabel').textContent = t.songLabel;
+    songInput.placeholder = t.songPh;
+    document.getElementById('hintLine').textContent = t.hint;
+    document.getElementById('tipLabel').textContent = t.tipLabel;
+    document.getElementById('customToggle').textContent = t.custom;
+    customAmt.placeholder = t.customPh;
+    document.getElementById('stampLabel').textContent = t.selectedTip;
+    document.getElementById('cooldownText').textContent = t.cooldownText;
+    document.querySelectorAll('.lang').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+    if (window.__syncLangSwitch) window.__syncLangSwitch(l);
+    updatePaypalVisibility();
+    if (window.__loadPaypalSdk) window.__loadPaypalSdk(l);
+  }
+  // =====================================================
+
+  // ===================== ANTI-SPAM SETTINGS =====================
+  // One free request per cabin per COOLDOWN_MS. Paid requests are never
+  // blocked by the cooldown — a tip always jumps the line.
+  const COOLDOWN_MS = 30 * 60 * 1000;      // 30 minutes
+  // Tips below this are not accepted — the buttons offer €10/€20 and the
+  // custom field refuses anything smaller.
+  const MIN_TIP = 10;
+  // The same song can't be requested twice within this window (one night).
+  const DUP_WINDOW_MS = 6 * 60 * 60 * 1000; // 6 hours
+  const LS_SONGS = 'florakete.songs';
+  const LS_DEVICE = 'florakete.device';
+  // ==============================================================
+
+  // Firebase keys may not contain . # $ [ ] / — both helpers strip
+  // everything that isn't a letter or a digit, so "8214 B" and "8214b"
+  // count as the same cabin.
+  function songKey(v){
+    return String(v || '')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
+      .slice(0, 60);
+  }
+
+  // A stable id for THIS phone/browser. The anonymous Firebase user id is
+  // used when available (it survives page reloads), with a random local id
+  // as fallback. Typing a different cabin number does not change it — so
+  // the 30-minute limit sticks to the phone as well as the cabin.
+  function deviceKey(){
+    try{
+      const u = firebase.auth().currentUser;
+      if (u && u.uid) return u.uid;
+    }catch(e){}
+    try{
+      let id = localStorage.getItem('florakete.deviceid');
+      if (!id){
+        id = 'd' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
+        localStorage.setItem('florakete.deviceid', id);
+      }
+      return id;
+    }catch(e){ return ''; }
+  }
+
+  // ---- local (per-device) memory, used as a fallback whenever the
+  // database can't be reached or refuses the guardrail read ----
+  function lsGet(key){
+    try{ return JSON.parse(localStorage.getItem(key) || '{}'); }
+    catch(e){ return {}; }
+  }
+  function lsSet(key, obj){
+    try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){}
+  }
+  function lsPrune(obj, maxAge){
+    const now = Date.now();
+    Object.keys(obj).forEach(k => { if (now - obj[k] > maxAge) delete obj[k]; });
+    return obj;
+  }
+
+  // ---- shared guardrail node in Firebase, so the limit follows the
+  // cabin across phones and private tabs, not just this browser ----
+  async function guardRead(path){
+    if (!firebaseReady || !db) return undefined;   // undefined = unknown
+    try{
+      await authReady;
+      const snap = await db.ref(path).once('value');
+      return snap.val();                            // null = nothing stored
+    }catch(e){
+      console.warn('Guardrail read unavailable:', e && e.message);
+      return undefined;
+    }
+  }
+  async function guardWrite(isFree, song, ts){
+    const sk = songKey(song);
+    // Free requests stamp this phone so the 30-minute clock sticks to the
+    // device. Paid requests only stamp the song index — a tip never starts
+    // a cooldown.
+    const dk = isFree ? deviceKey() : '';
+    const songs = lsPrune(lsGet(LS_SONGS), DUP_WINDOW_MS);
+    if (sk) { songs[sk] = ts; lsSet(LS_SONGS, songs); }
+    if (dk) { lsSet(LS_DEVICE, { ts: ts }); }
+    if (!firebaseReady || !db) return;
+    try{
+      const updates = {};
+      if (sk) updates['guardrail/songs/' + sk] = ts;
+      if (dk) updates['guardrail/devices/' + dk] = ts;
+      await db.ref().update(updates);
+    }catch(e){
+      console.warn('Guardrail write unavailable:', e && e.message);
+    }
+  }
+
+  // ---- "can't play this one" notifications ------------------------
+  // Request ids sent from THIS phone are remembered for 24h. The page
+  // listens to each one's `rejected` flag; when the DJ hits 🚫 the notice
+  // below appears in the guest's own language and the 30-minute wait is
+  // lifted so they can wish for another song right away.
+  const LS_MYREQS = 'florakete.myreqs';
+  function loadMyReqs(){
+    const obj = lsGet(LS_MYREQS);
+    const now = Date.now();
+    Object.keys(obj).forEach(k => {
+      if (!obj[k] || !obj[k].ts || now - obj[k].ts > 24 * 60 * 60 * 1000) delete obj[k];
+    });
+    return obj;
+  }
+  function watchMyRequest(id, song){
+    if (!id || typeof id !== 'string') return;
+    const reqs = loadMyReqs();
+    reqs[id] = reqs[id] || { song: song, ts: Date.now(), seen: false };
+    lsSet(LS_MYREQS, reqs);
+    attachRejectWatch(id, reqs[id]);
+  }
+  function attachRejectWatch(id, meta){
+    if (!firebaseReady || !db) return;
+    db.ref('requests/' + id + '/rejected').on('value', (snap) => {
+      if (snap.val() !== true) return;
+      const reqs = loadMyReqs();
+      if (reqs[id] && reqs[id].seen) return;
+      if (reqs[id]){ reqs[id].seen = true; lsSet(LS_MYREQS, reqs); }
+      showRejected(meta.song || (reqs[id] && reqs[id].song) || '');
+    }, (err) => {
+      console.warn('Reject watch unavailable:', err && err.message);
+    });
+    db.ref('requests/' + id + '/reaction').on('value', (snap) => {
+      const v = snap.val();
+      if (!v || typeof v !== 'string') return;
+      const reqs = loadMyReqs();
+      if (reqs[id] && reqs[id].lastReaction === v) return;
+      if (reqs[id]){ reqs[id].lastReaction = v; lsSet(LS_MYREQS, reqs); }
+      showReaction(v);
+      liftCooldown();
+    }, () => {});
+  }
+
+  let reactionTimer = null;
+  function showReaction(emoji){
+    const pop = document.getElementById('reactionPop');
+    document.getElementById('reactionEmoji').textContent = emoji;
+    document.getElementById('reactionText').textContent = T().reactionMsg;
+    pop.classList.remove('show');
+    void pop.offsetWidth;   // animasyonu yeniden tetikle
+    pop.classList.add('show');
+    clearTimeout(reactionTimer);
+    reactionTimer = setTimeout(() => pop.classList.remove('show'), 5500);
+  }
+  // Lifts this phone's 30-minute lock — used when the DJ rejects a song
+  // (fairness) and when the DJ sends a reaction (a little reward: the
+  // guest may wish again right away).
+  async function liftCooldown(){
+    clearCooldownUi();
+    lsSet(LS_DEVICE, {});
+    try{
+      await authReady;
+      const dk = deviceKey();
+      if (dk && firebaseReady && db) await db.ref('guardrail/devices/' + dk).remove();
+    }catch(e){}
+  }
+
+  function showRejected(song){
+    document.getElementById('rejectText').textContent = T().rejected.replace('{song}', song);
+    document.getElementById('rejectBox').classList.add('show');
+    liftCooldown();
+  }
+  // -----------------------------------------------------------------
+
+  function fmtLeft(ms){
+    const total = Math.max(0, Math.ceil(ms / 1000));
+    const m = Math.floor(total / 60), s = total % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  let cooldownTimer = null;
+  function showCooldown(untilTs){
+    clearInterval(cooldownTimer);
+    const tick = () => {
+      const left = untilTs - Date.now();
+      if (left <= 0){
+        clearInterval(cooldownTimer);
+        cooldownBox.classList.remove('show');
+        sendFreeBtn.disabled = false;
+        setStatus(T().canSendNow, 'success');
+        return;
+      }
+      cooldownClock.textContent = fmtLeft(left);
+    };
+    cooldownBox.classList.add('show');
+    sendFreeBtn.disabled = true;
+    tick();
+    cooldownTimer = setInterval(tick, 1000);
+  }
+  function clearCooldownUi(){
+    clearInterval(cooldownTimer);
+    cooldownBox.classList.remove('show');
+    sendFreeBtn.disabled = false;
+  }
+
+  // When did THIS phone last send a free request, regardless of which
+  // cabin number was typed in.
+  async function lastDeviceAt(){
+    const dk = deviceKey();
+    if (!dk) return 0;
+    const remote = await guardRead('guardrail/devices/' + dk);
+    const local = Number((lsGet(LS_DEVICE) || {}).ts) || 0;
+    return Math.max(Number(remote) || 0, local);
+  }
+
+  async function lastSongAt(song){
+    const sk = songKey(song);
+    if (!sk) return 0;
+    const remote = await guardRead('guardrail/songs/' + sk);
+    const local = lsPrune(lsGet(LS_SONGS), DUP_WINDOW_MS)[sk] || 0;
+    return Math.max(Number(remote) || 0, local);
+  }
+
+  // The single gate every send path goes through. `isPaid` requests skip
+  // the cooldown but still can't duplicate a song that's already queued.
+  async function passesGuardrail(isPaid){
+    const song = currentSong();
+
+    const songTs = await lastSongAt(song);
+    if (songTs && Date.now() - songTs < DUP_WINDOW_MS){
+      setStatus(T().dupSong, 'error');
+      songInput.focus();
+      songInput.select();
+      return false;
+    }
+
+    if (isPaid) return true;
+
+    // The 30-minute clock sticks to this phone. A tip always goes through.
+    const devTs = await lastDeviceAt();
+    const left = devTs + COOLDOWN_MS - Date.now();
+    if (devTs && left > 0){
+      showCooldown(devTs + COOLDOWN_MS);
+      setStatus(T().cooldownMsg.replace('{left}', fmtLeft(left)), 'error');
+      return false;
+    }
+    clearCooldownUi();
+    return true;
+  }
+
+  // Show a friendly banner instead of letting the page silently fail
+  // when Firebase and/or PayPal haven't been configured yet.
+  if (!firebaseReady || PAYPAL_CLIENT_ID.includes('YOUR_')){
+    configWarning.hidden = false;
+  }
+
+  function setStatus(msg, type){
+    statusMsg.textContent = msg;
+    statusMsg.className = type || '';
+  }
+
+  // Drop the needle as a little reward when a request lands successfully.
+  function dropNeedle(){
+    tonearm.classList.add('dropped');
+    setTimeout(() => tonearm.classList.remove('dropped'), 1800);
+  }
+
+  function updatePaypalVisibility(){
+    // The payment button only appears for a valid tip (€10 or more).
+    paypalContainer.style.display = selectedAmount >= MIN_TIP ? 'block' : 'none';
+    sendFreeBtn.textContent = selectedAmount >= MIN_TIP ? T().sendFreeAlt : T().sendFree;
+  }
+
+  function setAmount(amt){
+    selectedAmount = amt;
+    amountStamp.textContent = '€' + amt;
+    updatePaypalVisibility();
+  }
+
+  tipButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tipButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (btn.dataset.amt === 'custom'){
+        customAmt.hidden = false;
+        customAmt.focus();
+        setAmount(Number(customAmt.value) || 0);
+      } else {
+        customAmt.hidden = true;
+        setAmount(Number(btn.dataset.amt));
+      }
+    });
+  });
+
+  customAmt.addEventListener('input', () => {
+    setAmount(Number(customAmt.value) || 0);
+  });
+
+  function currentSong(){ return songInput.value.trim(); }
+
+  function validateSong(){
+    if (!currentSong()){
+      setStatus(T().errSong, 'error');
+      songInput.focus();
+      return false;
+    }
+    return true;
+  }
+
+  // Pushes a request straight into Firebase — the admin dashboard
+  // listens to this same path and updates instantly.
+  async function saveRequest(tipStatus, amount, paypalOrderId){
+    if (!firebaseReady || !db){
+      console.warn('Firebase is not configured — request was not saved.');
+      return false;
+    }
+    // Wait for the anonymous guest session before writing; the rules
+    // reject unauthenticated writes.
+    const signedIn = await authReady;
+    if (!signedIn){
+      console.error('No guest session — request was not saved.');
+      return false;
+    }
+    const record = {
+      song: currentSong(),
+      amount: amount || 0,
+      tipStatus,            // 'paid' | 'none'
+      createdAt: Date.now(),
+      played: false
+    };
+    // Only send paypalOrderId when there really is one — the rules require
+    // a paid request to carry its PayPal order id so the DJ can verify it.
+    if (paypalOrderId) record.paypalOrderId = paypalOrderId;
+    // The guest's anonymous id lets THIS phone read the status of its own
+    // request later — that's how the "can't play this one" notice arrives.
+    try{
+      const u = firebase.auth().currentUser;
+      if (u && u.uid) record.uid = u.uid;
+    }catch(e){}
+
+    try{
+      const ref = await db.ref('requests').push(record);
+      return (ref && ref.key) || true;
+    }catch(err){
+      console.error('Firebase error:', err);
+      return false;
+    }
+  }
+
+  function resetForm(){
+    songInput.value = '';
+    // The cabin number stays put — the same guest usually asks again later,
+    // and it keeps the cooldown attached to the right cabin.
+    customAmt.value = '';
+    customAmt.hidden = true;
+    tipButtons.forEach(b => b.classList.remove('active'));
+    setAmount(0);
+  }
+
+  sendFreeBtn.addEventListener('click', async () => {
+    if (!validateSong()) return;
+    const song = currentSong();
+    sendFreeBtn.disabled = true;
+    setStatus(T().checking);
+    if (!(await passesGuardrail(false))){
+      // passesGuardrail already explained why and, for a cooldown,
+      // left the button disabled with a live countdown.
+      if (!cooldownBox.classList.contains('show')) sendFreeBtn.disabled = false;
+      return;
+    }
+    setStatus(T().sending);
+    const ok = await saveRequest('none', 0, null);
+    sendFreeBtn.disabled = false;
+    if (ok){
+      if (typeof ok === 'string') watchMyRequest(ok, song);
+      const now = Date.now();
+      await guardWrite(true, song, now);
+      setStatus(T().sent, 'success');
+      dropNeedle();
+      resetForm();
+      showCooldown(now + COOLDOWN_MS);
+    } else {
+      setStatus(firebaseReady ? T().wrong : T().setup, 'error');
+    }
+  });
+
+  function renderPaypalButtons(){
+    if (!window.paypal) return;
+    paypalContainer.innerHTML = '';   // clear before (re)render on language change
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
+      createOrder: async function(data, actions){
+        if (!validateSong()) { throw new Error('missing-song'); }
+        if (!selectedAmount || selectedAmount <= 0){
+          setStatus(T().chooseAmt, 'error');
+          throw new Error('missing-amount');
+        }
+        if (selectedAmount < MIN_TIP){
+          setStatus(T().minTip, 'error');
+          throw new Error('below-min-tip');
+        }
+        // A tip skips the 30-minute cooldown, but nobody pays for a song
+        // that is already in the queue.
+        if (!(await passesGuardrail(true))){ throw new Error('duplicate-song'); }
+        return actions.order.create({
+          purchase_units: [{
+            description: 'Song request tip: ' + currentSong(),
+            amount: { value: selectedAmount.toFixed(2), currency_code: 'EUR' }
+          }]
+        });
+      },
+      onApprove: function(data, actions){
+        const song = currentSong();
+        return actions.order.capture().then(async function(){
+          setStatus(T().processing);
+          const ok = await saveRequest('paid', selectedAmount, data.orderID);
+          if (ok){
+            if (typeof ok === 'string') watchMyRequest(ok, song);
+            // Only the song index is stamped — a paid request must never
+            // start a cooldown on the guest's own cabin.
+            await guardWrite(false, song, Date.now());
+            setStatus(T().paidSent, 'success');
+            dropNeedle();
+            resetForm();
+          } else {
+            setStatus(T().paidSaveFail, 'error');
+          }
+        });
+      },
+      onError: function(err){
+        console.error('PayPal error:', err);
+        setStatus(T().payFail, 'error');
+      },
+      onCancel: function(){
+        setStatus(T().payCancel, '');
+      }
+    }).render('#paypal-button-container').catch(err => console.error('PayPal render error:', err));
+  }
+
+  window.addEventListener('paypalsdkready', renderPaypalButtons);
+  if (window.__paypalReady) renderPaypalButtons();
+
+  if (PAYPAL_CLIENT_ID.includes('YOUR_')){
+    paypalContainer.innerHTML =
+      '<p style="color:#9C8FBF;font-size:12px;text-align:center;">PayPal isn\'t configured yet — set your client ID in the code.</p>';
+  }
+
+  // On load: if this phone is still inside the 30-minute window, show the
+  // countdown right away instead of letting the guest type first.
+  (async function(){
+    const ts = await lastDeviceAt();
+    const until = ts + COOLDOWN_MS;
+    if (ts && until > Date.now()){
+      showCooldown(until);
+      setStatus('');
+    }
+  })();
+
+  // Re-attach watches for requests sent earlier from this phone, so a
+  // guest who reopens the page still sees a pending "can't play" notice.
+  (async function(){
+    await authReady;
+    const reqs = loadMyReqs();
+    Object.keys(reqs).forEach(id => { if (!reqs[id].seen) attachRejectWatch(id, reqs[id]); });
+  })();
+
+  document.getElementById('rejectClose').addEventListener('click', () => {
+    document.getElementById('rejectBox').classList.remove('show');
+  });
+
+  // Language switcher
+  document.querySelectorAll('.lang').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+  applyLang(LANG);
+
+  // ---- language toggle: the guest lands straight on the request form.
+  // The corner button flips between German and English and remembers the
+  // choice; the flag markup in #welcomeGate is only used as the icon source. ----
+  (function(){
+    const gate = document.getElementById('welcomeGate');
+    const sw = document.getElementById('langSwitch');
+    if (gate) gate.remove();
+    if (!sw) return;
+    const FLAGS = {
+      de: '<svg viewBox="0 0 60 40"><rect width="60" height="40" fill="#000"/><rect y="13.3" width="60" height="26.7" fill="#DD0000"/><rect y="26.6" width="60" height="13.4" fill="#FFCE00"/></svg>',
+      en: '<svg viewBox="0 0 60 40"><rect width="60" height="40" fill="#012169"/><path d="M0,0 60,40 M60,0 0,40" stroke="#fff" stroke-width="8"/><path d="M0,0 60,40 M60,0 0,40" stroke="#C8102E" stroke-width="4"/><path d="M30,0 V40 M0,20 H60" stroke="#fff" stroke-width="12"/><path d="M30,0 V40 M0,20 H60" stroke="#C8102E" stroke-width="7"/></svg>'
+    };
+    // the button shows the language you switch TO, so the tap is self-explanatory
+    window.__syncLangSwitch = function(l){
+      const other = (l === 'de') ? 'en' : 'de';
+      sw.innerHTML = FLAGS[other];
+      sw.setAttribute('aria-label', other === 'de' ? 'Auf Deutsch umschalten' : 'Switch to English');
+      sw.title = other === 'de' ? 'Deutsch' : 'English';
+    };
+    sw.addEventListener('click', () => applyLang(LANG === 'de' ? 'en' : 'de'));
+    window.__syncLangSwitch(LANG);
+  })();
+
+  // ---- socials: any link left as "#" is hidden, so the row only shows
+  // the profiles that are actually filled in. Paste real URLs above. ----
+  (function(){
+    const row = document.querySelector('.social');
+    if (!row) return;
+    let live = 0;
+    row.querySelectorAll('a.soc').forEach(a => {
+      const h = a.getAttribute('href');
+      if (!h || h === '#') a.style.display = 'none'; else live++;
+    });
+    if (!live) row.style.display = 'none';
+  })();
+
+  setAmount(0);
+})();
+</script>
+
+</body>
+</html>
