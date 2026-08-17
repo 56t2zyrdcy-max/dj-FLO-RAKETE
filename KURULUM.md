@@ -17,7 +17,7 @@ Bu sistem ayrı Firebase projesinde (`djozkan-b30e6`), ayrı repoda çalışır.
 | DJ paneli | `.../admin.html?dj=flo` |
 | QR üretici | `.../qr.html?dj=flo` |
 
-Kök: `https://56t2zyrdcy-max.github.io/dj-FLO-RAKETE`
+Kök: `https://56t2zyrdcy-max.github.io/songwunsch`
 
 ---
 
