@@ -2442,7 +2442,10 @@ async function render(){
   // --- plain QR canvas ---
   const qc = $('qrCanvas'), q = qc.getContext('2d');
   q.fillStyle = '#fff'; q.fillRect(0,0,720,720);
-  q.drawImage(qr, 0, 0, 720, 720);
+  // A QR code MUST keep a white quiet zone around it or scanners cannot find
+  // the finder patterns. Without this inset the exported PNG is unreadable.
+  const QUIET = 48;
+  q.drawImage(qr, QUIET, QUIET, 720 - QUIET*2, 720 - QUIET*2);
   // centre badge so the code still reads (error level H tolerates it)
   const bs = 150, bx = (720-bs)/2;
   q.fillStyle = '#fff'; roundRect(q,bx,bx,bs,bs,26); q.fill();

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Flo Rakete — Musik für deine Fete</title>
+<!--
+  This page exists so the QR code can point at the short folder address
+  instead of ".../guest.html". A shorter URL means a less dense QR, which
+  scans faster and from further away. It sends every visitor straight to
+  the request page.
+-->
+<meta http-equiv="refresh" content="0; url=guest.html">
+<link rel="canonical" href="guest.html">
+<style>
+  html,body{
+    margin:0; height:100%;
+    background:radial-gradient(ellipse at top, #24070E 0%, #08070A 55%);
+    color:#F7F4FA;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+  }
+  .box{padding:24px}
+  .name{font-size:30px; font-weight:800; letter-spacing:.5px; margin-bottom:8px}
+  .slogan{
+    font-size:11px; letter-spacing:3.5px; text-transform:uppercase;
+    color:#E4032E; font-weight:700; margin-bottom:22px;
+  }
+  .spinner{
+    width:34px; height:34px; margin:0 auto 18px; border-radius:50%;
+    border:3px solid rgba(247,244,250,0.18); border-top-color:#E4032E;
+    animation:spin .9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){ .spinner{animation:none} }
+  a{color:#FF8A3D}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="name">DJ Flo Rakete</div>
+    <div class="slogan">Musik für deine Fete</div>
+    <noscript><a href="guest.html">Weiter zum Songwunsch →</a></noscript>
+  </div>
+  <script>location.replace('guest.html');</script>
+</body>
+</html>
