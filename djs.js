@@ -12,6 +12,10 @@
    slogan      small line under the headline, blank string to hide it
    accent      main brand colour
    accent2     secondary colour, used for gradients and highlights
+   bgTop       page background at the top (the glow behind the header)
+   bgBase      page background lower down; keep it near-black
+   panelTop    same idea for the DJ panel
+   panelBase   same idea for the DJ panel
    logoMark    small square logo for the spinning vinyl label
    logoFull    wide logo lockup for dark backgrounds
    logoPrint   same lockup in dark ink, for the white printed poster
@@ -35,6 +39,10 @@ window.DJS = {
     slogan:   'Musik für deine Fete',
     accent:   '#E4032E',
     accent2:  '#FF8A3D',
+    bgTop:    '#24070E',
+    bgBase:   '#08070A',
+    panelTop: '#26080F',
+    panelBase:'#0B0709',
     logoMark: 'assets/flo-mark.svg',
     logoFull: 'assets/flo-full.svg',
     logoPrint:'assets/flo-full-light.svg',
@@ -44,6 +52,28 @@ window.DJS = {
     paypal:   '',
     socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
     noteDe:   'Wünsche werden in der Reihenfolge gespielt, die zur Stimmung passt — nicht jeder Song passt in jeden Moment.',
+    noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
+  },
+
+  crowd: {
+    slug:     'crowd',
+    name:     'DJ CROW D',
+    slogan:   '',
+    accent:   '#EDF2F8',
+    accent2:  '#8FA9C4',
+    bgTop:    '#141A22',
+    bgBase:   '#07080A',
+    panelTop: '#111721',
+    panelBase:'#070809',
+    logoMark: 'assets/crowd-mark-dark.png',
+    logoFull: 'assets/crowd-full.png',
+    logoPrint:'assets/crowd-full-light.png',
+    panelKey: 'eEjw789oEyVQ79xB',
+    ownerUid: '',
+    tips:     false,
+    paypal:   '',
+    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
+    noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen — nicht jeder Song passt in jeden Moment.',
     noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
   }
 

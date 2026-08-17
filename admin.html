@@ -320,6 +320,21 @@
 
 <script>
 (function(){
+  // Brand the panel before anything else. This has to run ahead of the
+  // connection check below, otherwise an offline panel shows the wrong
+  // DJ's name and colours.
+  (function brandPanel(){
+    const d = window.DJ;
+    if (!d) return;
+    const el = document.getElementById('djName');
+    if (el) el.textContent = d.name;
+    document.title = d.name + ' \u2014 Live Queue (Admin)';
+    const root = document.documentElement.style;
+    if (d.accent)    root.setProperty('--coral', d.accent);
+    if (d.panelTop)  root.setProperty('--teal', d.panelTop);
+    if (d.panelBase) root.setProperty('--navy', d.panelBase);
+  })();
+
   const queueEl = document.getElementById('queue');
   const emptyState = document.getElementById('emptyState');
   const statCount = document.getElementById('statCount');

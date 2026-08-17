@@ -629,6 +629,10 @@
     const root = document.documentElement.style;
     if (d.accent)  root.setProperty('--magenta', d.accent);
     if (d.accent2) root.setProperty('--cyan', d.accent2);
+    // Without this the page keeps the first DJ's background and every DJ
+    // ends up looking like that one.
+    if (d.bgTop)   root.setProperty('--curtain', d.bgTop);
+    if (d.bgBase)  root.setProperty('--void', d.bgBase);
     const mark = document.querySelector('.vinyl .label img');
     if (mark && d.logoMark){ mark.src = d.logoMark; mark.alt = d.name; }
     // the DJ's own wording for the highlighted note
