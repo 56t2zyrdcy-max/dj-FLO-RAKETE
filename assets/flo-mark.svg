@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="DJ Flo Rakete">
+  <text x="100" y="84" fill="#F7F4FA" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900"
+        font-size="58" text-anchor="middle" textLength="120" lengthAdjust="spacingAndGlyphs">FLO</text>
+  <rect x="40" y="96" width="120" height="6" rx="3" fill="#E4032E"/>
+  <text x="100" y="152" fill="#F7F4FA" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900"
+        font-size="34" text-anchor="middle" textLength="128" lengthAdjust="spacingAndGlyphs">RAKETE</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 690 320" width="690" height="320" role="img" aria-label="DJ Flo Rakete — Musik für deine Fete">
+  <!-- red lowercase d -->
+  <path fill="#E4032E" d="M152 44h36v176h-36v-19c-12 14-28 22-48 22-40 0-69-32-69-76s29-76 69-76c20 0 36 8 48 22V44zm-42 79c-21 0-37 17-37 42s16 42 37 42 37-17 37-42-16-42-37-42z"/>
+  <!-- j -->
+  <path fill="#E4032E" d="M238 100h34v111c0 36-20 58-55 61l-4-31c18-3 25-13 25-32V100z"/>
+  <circle fill="#E4032E" cx="255" cy="61" r="19"/>
+  <!-- fader lines + markers -->
+  <g stroke="#E4032E" stroke-width="5" stroke-linecap="round" opacity="0.8">
+    <line x1="212" y1="20" x2="212" y2="206"/>
+    <line x1="235" y1="34" x2="235" y2="220"/>
+  </g>
+  <g fill="#E4032E">
+    <polygon points="212,76 223,90 212,104 201,90"/>
+    <polygon points="212,146 223,160 212,174 201,160"/>
+    <polygon points="235,186 246,200 235,214 224,200"/>
+  </g>
+  <!-- FL -->
+  <text x="292" y="152" fill="#F7F4FA" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900"
+        font-size="120" textLength="196" lengthAdjust="spacingAndGlyphs">FL</text>
+  <!-- vinyl O with headphones -->
+  <g transform="translate(562,100)">
+    <path fill="none" stroke="#F7F4FA" stroke-width="10" stroke-linecap="round" d="M-68 6a68 68 0 0 1 136 0"/>
+    <rect fill="#F7F4FA" x="-78" y="0" width="21" height="38" rx="10"/>
+    <rect fill="#F7F4FA" x="57" y="0" width="21" height="38" rx="10"/>
+    <circle fill="#F7F4FA" r="54"/>
+    <circle fill="#0A0A0C" r="35"/>
+    <g fill="none" stroke="#0A0A0C" stroke-width="3" opacity="0.5"><circle r="46"/><circle r="41"/></g>
+    <circle fill="#F7F4FA" r="11"/>
+    <circle fill="#0A0A0C" r="3.5"/>
+  </g>
+  <!-- RAKETE -->
+  <text x="292" y="250" fill="#F7F4FA" font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900"
+        font-size="88" textLength="324" lengthAdjust="spacingAndGlyphs">RAKETE</text>
+  <!-- tagline -->
+  <text x="294" y="290" fill="#E4032E" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+        font-size="26" textLength="320" lengthAdjust="spacingAndGlyphs">MUSIK FÜR DEINE FETE</text>
+</svg>
