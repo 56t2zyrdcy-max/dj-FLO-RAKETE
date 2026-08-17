@@ -14,12 +14,13 @@
         },
 
         "requests": {
-          ".read": "auth != null && (auth.token.firebase.sign_in_provider === 'anonymous' || auth.uid === root.child('djs').child($djId).child('ownerUid').val() || auth.uid === root.child('platform').child('ownerUid').val())",
+          ".read": "auth != null",
           ".write": false,
 
           "$reqId": {
-            ".write": "auth != null && ((!data.exists() && auth.token.firebase.sign_in_provider === 'anonymous' && newData.child('uid').val() === auth.uid) || auth.uid === root.child('djs').child($djId).child('ownerUid').val() || auth.uid === root.child('platform').child('ownerUid').val())",
-            ".validate": "newData.hasChildren(['song','amount','tipStatus','createdAt','played']) || !newData.exists()",
+            ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('uid').val() === auth.uid) || (data.exists() && newData.exists()) || (data.exists() && !newData.exists() && data.child('createdAt').val() < (now - 86400000)))",
+
+            ".validate": "!data.exists() ? newData.hasChildren(['song','amount','tipStatus','createdAt','played']) : (newData.child('song').val() === data.child('song').val() && newData.child('createdAt').val() === data.child('createdAt').val() && newData.child('uid').val() === data.child('uid').val())",
 
             "song":          { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 160" },
             "amount":        { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000" },

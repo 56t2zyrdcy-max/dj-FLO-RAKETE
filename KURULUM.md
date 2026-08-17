@@ -1,144 +1,133 @@
-# DJ FLO RAKETE — Şarkı İstek Sistemi
+# DJ Ağı — Şarkı İstek Platformu
 
-Bu paket **DJ oZMEn sisteminden tamamen bağımsızdır.** Senin `djozmen-53d67`
-Firebase projene, veritabanına, PayPal hesabına hiçbir bağlantısı yok. Flo'nun
-kendi Firebase projesi açılana kadar bu sistem hiçbir yere veri yazmaz.
+Tek kod tabanı, çok DJ. Her DJ'nin kendi adresi, kendi markası, kendi
+kuyruğu var; kod tek yerde durur, bir düzeltme hepsine gider.
+
+**Senin `djozmen-53d67` projene ve `dj-gigs` reponua hiç dokunulmadı.**
+Bu sistem ayrı Firebase projesinde (`djozkan-b30e6`), ayrı repoda çalışır.
 
 ---
 
-## Paketin içindekiler
+## Canlı adresler
+
+| Ne | Adres |
+|---|---|
+| **Yönetim panelin** | `.../console.html` |
+| Misafir sayfası (QR buraya) | `.../?dj=flo` |
+| DJ paneli | `.../admin.html?dj=flo` |
+| QR üretici | `.../qr.html?dj=flo` |
+
+Kök: `https://56t2zyrdcy-max.github.io/dj-FLO-RAKETE`
+
+---
+
+## Dosyalar
 
 | Dosya | Ne işe yarar |
 |---|---|
-| `guest.html` | **Misafir sayfası.** QR kodun açtığı sayfa. Şarkı isteği + bahşiş. |
-| `admin.html` | **DJ paneli.** Canlı istek kuyruğu. Google hesabıyla giriş. |
-| `qr.html` | **QR üretici.** Adresi gir → QR kodu + baskıya hazır A5 afiş indir. |
-| `links.html` | Sosyal medya link sayfası (Linktree tarzı). İsteğe bağlı. |
-| `firebase-rules.json` | Veritabanı güvenlik kuralları. Kopyala-yapıştır. |
-| `assets/` | Logo dosyaları (SVG, vektör — her boyutta net). |
-
-Diller: **Almanca + İngilizce.** Sayfa telefonun diline göre kendi açılır,
-sağ üstteki bayrağa basınca diğer dile geçer. Karşılama ekranı yok — QR'ı
-okutan kişi doğrudan istek formuna düşer.
+| **`djs.js`** | **Tüm DJ'lerin tanımlandığı tek dosya.** Yeni DJ eklemek sadece burayı düzenlemek demek. |
+| `index.html` | Kısa adres. `?dj=` parametresini taşıyıp misafir sayfasına yönlendirir. |
+| `guest.html` | Misafir istek sayfası. Markayı `djs.js`'ten okur. |
+| `admin.html` | DJ paneli. Google ile tek tık giriş. |
+| `console.html` | Senin yönetim panelin. Tüm DJ'ler, canlı sayılar, linkler. |
+| `qr.html` | QR + baskıya hazır A5 afiş. İnternetsiz çalışır. |
+| `firebase-rules.json` | Veritabanı güvenlik kuralları. |
+| `assets/` | Her DJ'nin logoları: `<slug>-mark.svg`, `<slug>-full.svg`, `<slug>-full-light.svg`. |
 
 ---
 
-## Kurulum — 6 adım (~15 dakika)
+## Yeni DJ ekleme (5 dakika)
 
-### 1. Firebase projesi aç (Flo'nun kendi hesabıyla)
-
-1. https://console.firebase.google.com → **Add project**
-2. İsim: `dj-flo-rakete` → Google Analytics'i **kapat** (gerek yok) → Create
-
-### 2. Realtime Database oluştur
-
-1. Sol menü **Build → Realtime Database → Create Database**
-2. Konum: **europe-west1 (Belgium)** — Almanya için en düşük gecikme, GDPR uyumlu
-3. **Start in locked mode** seç (kuralları 5. adımda gireceğiz)
-
-### 3. Giriş yöntemlerini aç
-
-**Build → Authentication → Get started**, sonra iki sağlayıcıyı aç:
-
-- **Anonymous** → Enable (misafirler için)
-- **Google** → Enable (DJ panelinin girişi için)
-
-### 4. Config'i dosyalara yapıştır
-
-1. ⚙️ **Project settings → General → Your apps → Web (`</>`)** → uygulama ekle
-2. Sana verdiği `firebaseConfig` bloğunu kopyala
-3. `guest.html` içinde `const firebaseConfig = {` satırını bul, `YOUR_...`
-   yazan bloğun **tamamını** kopyaladığınla değiştir
-4. **Aynısını `admin.html`'de de yap.** İki dosya aynı config'i kullanmalı,
-   yoksa panel istekleri göremez.
-
-> Bu anahtarlar gizli değil — herkese açık olması normaldir. Sistemi koruyan
-> şey config değil, bir sonraki adımdaki kurallardır.
-
-### 5. Güvenlik kurallarını gir
-
-1. Önce `admin.html`'i tarayıcıda aç, **Google ile bir kez giriş yap.**
-   "This account is not the DJ account" diyecek — **bu normal**, kural henüz yok.
-2. Firebase Console → **Authentication → Users** → o Google satırındaki
-   **UID**'yi kopyala.
-3. `firebase-rules.json` dosyasını aç, **`DJ_UID_HERE` yazan 2 yeri** o UID ile
-   değiştir.
-4. Console → **Realtime Database → Rules** sekmesi → içeriği tamamen sil,
-   `firebase-rules.json`'un içeriğini yapıştır → **Publish**.
-
-Bu kurallar şunu sağlar: misafir sadece **kendi** isteğini yazabilir,
-başkasınınkini silemez/düzenleyemez; sadece Flo'nun hesabı kuyruğu yönetebilir;
-rastgele bir Google hesabı panele giremez.
-
-### 6. Yayına al
-
-En pratik yol GitHub Pages (ücretsiz):
-
-1. GitHub'da **yeni ve ayrı bir repo** aç — örn. `dj-flo-rakete`
-   (kendi `dj-gigs` repona **dokunma**)
-2. Bu klasördeki dosyaları yükle
-3. **Settings → Pages → Branch: main / root → Save**
-4. Adres şu şekilde olur:
-   `https://KULLANICIADI.github.io/dj-flo-rakete/guest.html`
-
-Kendi alan adı (`djflorakete.de` gibi) alınırsa Settings → Pages → Custom
-domain'den bağlanır.
-
----
-
-## QR kodu üret
-
-1. `qr.html`'i tarayıcıda aç
-2. Yayına aldığın **guest.html adresini** yapıştır → **QR erstellen**
-3. İki çıktı indirebilirsin:
-   - **QR als PNG** — sadece kod (Instagram, kartvizit, sticker için)
-   - **Aushang als PNG (A5)** — logolu, baskıya hazır masa afişi (300 dpi)
-
-QR üretici internetsiz de çalışır — kütüphane dosyanın içine gömülü, dışarıya
-hiçbir veri gitmez.
-
-> ⚠️ **QR'ı bastırmadan önce mutlaka telefonla okut ve test et.** Adres
-> değişirse QR de değişir; basılmış afişler çöp olur. Önce adresi kesinleştir.
-
----
-
-## Sonra yapılacaklar (şimdilik kapalı)
-
-### PayPal / banka — bahşiş alma
-
-**Şu an tamamen kapalı.** Bahşiş bölümü sayfada hiç görünmüyor; sistem saf
-"ücretsiz istek" modunda çalışıyor. Tek bir anahtarla kontrol ediliyor:
+### 1. `djs.js`'e blok ekle
 
 ```js
-window.TIPS_ENABLED = false;   // guest.html
+otsi: {
+  slug:     'otsi',                  // adreste görünür: ?dj=otsi — QR basıldıktan sonra ASLA değiştirme
+  name:     'DJ Otsi',
+  slogan:   'Deine Party, deine Musik',
+  accent:   '#1E9BFF',               // ana marka rengi
+  accent2:  '#7CF5B6',
+  logoMark: 'assets/otsi-mark.svg',
+  logoFull: 'assets/otsi-full.svg',
+  logoPrint:'assets/otsi-full-light.svg',
+  ownerUid: '',                      // 3. adımda dolduracaksın
+  tips:     false,
+  paypal:   '',
+  socials:  { instagram: '', youtube: '' },
+  noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen.',
+  noteEn:   'Requests are played when they fit the vibe.'
+}
 ```
 
-Açmak için:
+### 2. Logolarını `assets/` içine koy
 
-1. https://developer.paypal.com/dashboard/applications → **Live** sekmesi
-2. Yeni REST app oluştur → **Client ID**'yi kopyala
-3. `guest.html` içinde `const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID";`
-   satırına **Flo'nun kendi ID'sini** yaz
-4. Sonra `window.TIPS_ENABLED = true;` yap
+Üç dosya: koyu zemin için `-full.svg`, beyaz baskı için `-full-light.svg`,
+vinil ortasındaki küçük marka için `-mark.svg`. SVG yoksa PNG de olur,
+sadece `djs.js`'teki uzantıyı değiştir.
 
-> ⚠️ **Başka birinin PayPal ID'sini buraya yazma.** ID doğru değilse para yanlış
-> hesaba gider ve bunu geri almak kolay olmaz. Bu yüzden demo aşamasında bahşiş
-> tamamen kapalı bırakıldı — senin hesabın da dahil hiçbir hesap bağlı değil.
+### 3. DJ'nin hesabını tanımla
 
-Para **doğrudan Flo'nun PayPal hesabına** gider; arada kimse yoktur.
-Minimum bahşiş `MIN_TIP` sabitinden (şu an €10) değiştirilir.
+1. DJ **kendi Google hesabıyla** `admin.html?dj=otsi` adresine girer
+2. "Bu hesabın DJ hesabı olmadığı" yazar — **normal**, henüz tanımlı değil
+3. Ekranda görünen **UID**'yi al (ya da Firebase Console → Authentication → Users)
+4. `djs.js`'te o DJ'nin `ownerUid` alanına yaz
+5. Firebase Console → Realtime Database → Data → `djs/otsi/ownerUid` düğümüne
+   aynı UID'yi yaz
 
-### Sosyal medya linkleri
+Adım 5 önemli: **güvenliği sağlayan şey `djs.js` değil, veritabanındaki
+`ownerUid`.** `djs.js` herkese açık bir dosya; kural katmanı veritabanını okur.
 
-`guest.html` ve `links.html` içindeki `href="#"` olan linkler **otomatik
-gizleniyor.** Flo'nun Instagram/Spotify/YouTube adreslerini yazınca ikonlar
-kendiliğinden görünür olur. Boş kalanları silmene gerek yok.
+### 4. QR'ını üret
 
-### Logo
+`qr.html?dj=otsi` → adres otomatik dolu gelir → **QR erstellen** →
+afişi veya kodu indir.
 
-`assets/` içindeki logolar vektör (SVG) — orijinal dosya elimde olmadığı için
-görselden yeniden çizildi, her boyutta net çıkar. Flo'nun orijinal dosyası
-(AI/EPS/şeffaf PNG) varsa onunla değiştirilebilir.
+---
+
+## Kimin neye erişimi var
+
+| | Misafir | DJ | Sen |
+|---|---|---|---|
+| Kendi isteğini yazma | ✅ | ✅ | ✅ |
+| Başkasının isteğini değiştirme | ❌ | ✅ (kendi DJ'sinde) | ✅ (hepsinde) |
+| Kuyruğu görme | ✅ (kopya engeli için) | ✅ | ✅ |
+| Başka DJ'nin kuyruğu | ❌ | ❌ | ✅ |
+
+Misafirler anonim olarak giriş yapar (hiçbir bilgi istemez). DJ'ler ve sen
+Google ile girersiniz. Kurallar kimliği veritabanından doğrular — kodu
+değiştirmek işe yaramaz.
+
+> **Repo herkese açık.** İçindeki Firebase anahtarları gizli değildir, öyle
+> olması normaldir. Sistemi koruyan şey `firebase-rules.json`. Kuralları
+> gevşetirsen koruma kalmaz.
+
+---
+
+## Bahşiş (şu an kapalı)
+
+Her DJ için ayrı ayrı kontrol edilir:
+
+```js
+tips:   true,
+paypal: 'O_DJ_NIN_KENDI_CLIENT_ID_SI',
+```
+
+**İkisi birlikte dolu olmadıkça bahşiş bölümü hiç görünmez.** Client ID
+https://developer.paypal.com/dashboard/applications → Live sekmesinden alınır.
+Para doğrudan o DJ'nin hesabına gider.
+
+> ⚠️ Bir DJ'nin sayfasına başka birinin PayPal ID'sini yazma. Para yanlış
+> hesaba gider ve geri alınması kolay değildir.
+
+---
+
+## QR basmadan önce
+
+1. Adresi kesinleştir. Adres değişirse QR de değişir, basılmış afişler çöp olur.
+2. **Kendi telefonunla okut.** Yazılımla doğruladım ama gerçek kamerayla
+   teyit 10 saniye sürer, matbaa parası riske girmez.
+3. Afişteki QR'da bilerek logo yok — ortası temiz kod uzaktan ve loş ışıkta
+   çok daha kolay okunur. Logo zaten afişin üstünde.
 
 ---
 
@@ -146,18 +135,21 @@ görselden yeniden çizildi, her boyutta net çıkar. Flo'nun orijinal dosyası
 
 | Sabit | Şu an | Ne yapar |
 |---|---|---|
-| `COOLDOWN_MS` | 30 dk | Ücretsiz istekler arası bekleme |
+| `COOLDOWN_MS` | 30 dk | Aynı telefonun istekleri arası bekleme |
 | `MIN_TIP` | €10 | Kabul edilen en düşük bahşiş |
 | `DUP_WINDOW_MS` | 6 saat | Aynı şarkının tekrar istenemeyeceği süre |
 
+Bunlar şimdilik tüm DJ'ler için ortak. DJ başına farklılaştırmak istersen
+`djs.js`'e taşınabilir.
+
 ---
 
-## Senin sistemine etkisi: sıfır
+## Teknik özet
 
-- Ayrı Firebase projesi → ayrı veritabanı, ayrı kota, ayrı fatura
-- Ayrı PayPal hesabı → para karışmaz
-- Ayrı `localStorage` alanı (`florakete.*`) → aynı telefonda ikisi de açılsa
-  bekleme süreleri birbirine karışmaz
-- Ayrı repo, ayrı adres, ayrı QR
-
-`djozmen-53d67` projene ve `dj-gigs` repona hiçbir değişiklik yapılmadı.
+- **Barındırma:** GitHub Pages (ücretsiz, statik)
+- **Veritabanı:** Firebase Realtime Database, **Belçika (europe-west1)** —
+  AB'de kalır, Almanya'ya en yakın konum
+- **Giriş:** misafir anonim, DJ ve sen Google
+- **Veri yapısı:** `djs/<slug>/requests`, `djs/<slug>/guardrail`
+- **Yetki:** `djs/<slug>/ownerUid` ve `platform/ownerUid`
+- **Plan:** Spark (ücretsiz) — kredi kartı gerekmez

@@ -15,9 +15,12 @@
    logoMark    small square logo for the spinning vinyl label
    logoFull    wide logo lockup for dark backgrounds
    logoPrint   same lockup in dark ink, for the white printed poster
-   ownerUid    the DJ's Google account id — this is what lets them into
-               their own panel. Fill it in after their first sign-in;
-               leave "" and only the platform owner can open the panel.
+   panelKey    the DJ panel opens with NO login at all. This random string
+               in the link is the only thing keeping strangers out, so treat
+               the link like a key: give it to the DJ, don't post it.
+                 admin.html?dj=flo&k=<panelKey>
+               Change it and the old link stops working immediately.
+   ownerUid    optional. Only used by the owner console for labelling.
    tips        false = the tip / PayPal section is hidden completely
    paypal      the DJ's OWN PayPal client id, only used when tips is true
    socials     any left out or blank are hidden automatically
@@ -35,6 +38,7 @@ window.DJS = {
     logoMark: 'assets/flo-mark.svg',
     logoFull: 'assets/flo-full.svg',
     logoPrint:'assets/flo-full-light.svg',
+    panelKey: 'VzBO1juKjzPeO0ZR',
     ownerUid: '',
     tips:     false,
     paypal:   '',
@@ -45,7 +49,8 @@ window.DJS = {
 
 };
 
-/* The account that may open the owner console and every DJ panel. */
+/* The Google account that may open the owner console (console.html).
+   The console stays behind a real login on purpose — it can see every DJ. */
 window.PLATFORM_OWNER_UID = '';
 
 /* ---------------------------------------------------------------------

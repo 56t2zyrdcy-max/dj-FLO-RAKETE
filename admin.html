@@ -192,32 +192,18 @@
     text-transform:uppercase; color:var(--foam); margin-bottom:8px; line-height:1.05;
   }
   .gate-card p{ font-size:13px; color:var(--slate); line-height:1.55; margin-bottom:22px; }
-  #googleBtn{
-    width:100%; padding:13px 16px; border-radius:11px; cursor:pointer;
-    border:1px solid rgba(244,247,246,0.25); background:#fff; color:#1f1f1f;
-    font-size:14px; font-weight:600; display:flex; align-items:center;
-    justify-content:center; gap:10px;
-  }
-  #googleBtn:hover{ border-color:var(--coral); }
-  #googleBtn:disabled{ opacity:.55; cursor:default; }
   #gateMsg{ margin-top:16px; font-size:12.5px; color:var(--coral); min-height:18px; margin-bottom:0; }
-  #signOutBtn{
-    background:transparent; border:1px solid rgba(244,247,246,0.2); color:var(--slate);
-    border-radius:9px; padding:7px 11px; font-size:11.5px; cursor:pointer;
-  }
-  #signOutBtn:hover{ border-color:var(--coral); color:var(--foam); }
 </style>
 </head>
 <body>
 
-<div id="authGate">
+<!-- No login here on purpose: the DJ opens their bookmark and the queue is
+     simply there. The key in the link is what keeps strangers out, so this
+     panel only complains when the link is incomplete. -->
+<div id="authGate" hidden>
   <div class="gate-card">
-    <div class="big">Booth locked</div>
-    <p>Sign in with the DJ Google account to open the live queue. Guests can send requests without signing in — only this panel is protected.</p>
-    <button id="googleBtn" type="button">
-      <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.8-6.8C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.1 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-2.8-.4-4.1H24v8.4h12.6c-.3 2.1-1.6 5.2-4.7 7.3l7.7 6c4.5-4.2 6.5-10.2 6.5-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.9-6.1C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.6l-7.7-6c-2.1 1.4-4.8 2.3-7.6 2.3-6.3 0-11.6-3.6-13.5-8.9l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
-      Sign in with Google
-    </button>
+    <div class="big">Falscher Link</div>
+    <p id="gateWhy">Dieser Link ist nicht vollständig. Öffne den Panel-Link, den du vom Veranstalter bekommen hast — er endet auf <code>&amp;k=…</code>.</p>
     <p id="gateMsg"></p>
   </div>
 </div>
@@ -243,7 +229,7 @@
     <button class="filter-btn" data-filter="unplayed">Unplayed</button>
     <button class="filter-btn" data-filter="paid">Tipped</button>
     <button id="soundToggle" type="button">🔊 Sound on</button>
-    <button id="signOutBtn" type="button" hidden>Sign out</button>
+
   </div>
 
   <div id="queue"></div>
@@ -577,30 +563,13 @@
 
   // Opened as a local file: Google sign-in cannot work, so say so plainly
   // rather than leaving the DJ clicking a button that will never succeed.
-  if (NEEDS_SERVER){
-    const gate = document.getElementById('authGate');
-    const btn  = document.getElementById('googleBtn');
-    btn.disabled = true;
-    btn.style.opacity = '0.45';
-    gate.querySelector('.gate-card p').innerHTML =
-      'This page is open as a local file, so Google refuses to sign you in ' +
-      '(the browser reports no web address). Put <b>admin.html</b> on a web ' +
-      'address &mdash; Firebase Hosting gives you one free &mdash; and open it ' +
-      'from there. Everything else in this file is already correct.';
-    document.getElementById('gateMsg').textContent =
-      location.protocol + '// is not a supported origin.';
-    return;
-  }
-
   // ---------------------------------------------------------------
   //  Sign-in gate. The queue is only wired up once the DJ Google
   //  account is signed in; the database rules enforce the same thing
   //  server-side, so a curious guest editing this file gains nothing.
   // ---------------------------------------------------------------
-  const authGate  = document.getElementById('authGate');
-  const googleBtn = document.getElementById('googleBtn');
-  const gateMsg   = document.getElementById('gateMsg');
-  const signOutBtn = document.getElementById('signOutBtn');
+  const authGate = document.getElementById('authGate');
+  const gateMsg  = document.getElementById('gateMsg');
 
   let queueRef = null;
 
@@ -695,61 +664,52 @@
     });
   }
 
-  googleBtn.addEventListener('click', () => {
-    gateMsg.textContent = '';
-    googleBtn.disabled = true;
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    auth.signInWithPopup(provider)
-      .catch((e) => {
-        console.error('Google sign-in failed:', e);
-        gateMsg.textContent = e && e.code === 'auth/popup-blocked'
-          ? 'The browser blocked the sign-in window. Allow pop-ups for this page and try again.'
-          : 'Sign-in failed. Check your connection and try again.';
-      })
-      .finally(() => { googleBtn.disabled = false; });
-  });
-
-  signOutBtn.addEventListener('click', () => { auth.signOut(); });
-
-  function lockOut(msg){
+  function block(why){
     stopQueue();
-    if (msg) gateMsg.textContent = msg;
     authGate.hidden = false;
-    signOutBtn.hidden = true;
+    if (why) document.getElementById('gateWhy').textContent = why;
     requests = {};
     loadedInitial = false;
     render();
   }
 
-  auth.onAuthStateChanged((user) => {
-    if (!user){ lockOut(''); return; }
+  // ---------------------------------------------------------------
+  //  The panel opens with no login. Two things have to line up:
+  //  the key in the link, and an anonymous session with the database.
+  //  Nothing is typed and nothing is remembered — reopening the
+  //  bookmark is enough.
+  // ---------------------------------------------------------------
+  (function openBooth(){
+    let key = '';
+    try{ key = new URLSearchParams(location.search).get('k') || ''; }catch(e){}
+    const expected = window.DJ.panelKey || '';
 
-    // Ask the database whether this account is allowed to see the queue.
-    // The rules are the single source of truth for who the DJ is.
-    db.ref(DJ_ROOT + '/requests').limitToLast(1).once('value')
-      .then(() => {
-        gateMsg.textContent = '';
-        authGate.hidden = true;
-        signOutBtn.hidden = false;
-        startQueue();
-        render();
-      })
-      .catch((e) => {
-        console.warn('Queue access denied:', e && e.code);
-        const wrongAccount = !e || e.code === 'PERMISSION_DENIED' || /permission/i.test(e.message || '');
-        lockOut(wrongAccount
-          ? 'This account is not the DJ account' + (user.email ? ' (' + user.email + ')' : '') + '.'
-          : 'Could not reach the database. Check your connection and try again.');
-        if (wrongAccount) auth.signOut();
-      });
-  });
+    if (expected && key !== expected){
+      block(key
+        ? 'Der Schlüssel in diesem Link stimmt nicht. Bitte den Panel-Link erneut vom Veranstalter anfordern.'
+        : 'Dieser Link ist nicht vollständig. Öffne den Panel-Link, den du bekommen hast — er endet auf \u0026k=…');
+      return;
+    }
 
-  // brand the panel for the DJ named in the URL
-  (function(){
-    const el = document.getElementById('djName');
-    if (el) el.textContent = window.DJ.name;
-    document.title = window.DJ.name + ' — Live Queue (Admin)';
+    authGate.hidden = true;
+
+    // A silent anonymous session — the guest page uses the same thing.
+    // The DJ never sees it happen.
+    firebase.auth().signInAnonymously().catch((e) => {
+      console.error('Anonymous session failed:', e);
+      gateMsg.textContent = '';
+      block('Keine Verbindung zur Datenbank. Prüfe das Internet und lade die Seite neu.');
+    });
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) return;
+      db.ref(DJ_ROOT + '/requests').limitToLast(1).once('value')
+        .then(() => { authGate.hidden = true; startQueue(); render(); })
+        .catch((e) => {
+          console.warn('Queue read failed:', e && e.code);
+          block('Die Datenbank hat den Zugriff abgelehnt. Bitte den Veranstalter informieren.');
+        });
+    });
   })();
 
   render();
