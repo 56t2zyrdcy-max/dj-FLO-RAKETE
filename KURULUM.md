@@ -77,7 +77,22 @@ sadece `djs.js`'teki uzantıyı değiştir.
 Adım 5 önemli: **güvenliği sağlayan şey `djs.js` değil, veritabanındaki
 `ownerUid`.** `djs.js` herkese açık bir dosya; kural katmanı veritabanını okur.
 
-### 4. QR'ını üret
+### 4. Sürüm etiketini yükselt (ATLAMA)
+
+`djs.js` her değiştiğinde, onu yükleyen 4 dosyadaki sürüm numarasını bir artır:
+
+```html
+<script src="djs.js?v=3"></script>   <!-- 4 -> 5 -> 6 ... -->
+```
+
+Dosyalar: `guest.html`, `admin.html`, `console.html`, `qr.html`
+
+**Neden gerekli:** GitHub Pages dosyaları ~10 dakika önbelleğe alır, tarayıcılar daha
+uzun tutabilir. Etiketi artırmazsan yeni eklediğin DJ'nin linki eski `djs.js`'i okur ve
+**ilk DJ'nin sayfası açılır.** Bu tam olarak bir kez başımıza geldi — CROW D linki
+Flo'yu gösterdi. Etiket bunu kesin olarak çözer.
+
+### 5. QR'ını üret
 
 `qr.html?dj=otsi` → adres otomatik dolu gelir → **QR erstellen** →
 afişi veya kodu indir.
