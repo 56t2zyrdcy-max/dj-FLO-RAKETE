@@ -16,6 +16,9 @@
    bgBase      page background lower down; keep it near-black
    panelTop    same idea for the DJ panel
    panelBase   same idea for the DJ panel
+   headerLogo  true = show the full logo lockup as the page headline instead
+               of the DJ's name in type. Use it when the logo already
+               contains the name, like CROW D's does.
    logoMark    small square logo for the spinning vinyl label
    logoFull    wide logo lockup for dark backgrounds
    logoPrint   same lockup in dark ink, for the white printed poster
@@ -65,7 +68,8 @@ window.DJS = {
     bgBase:   '#07080A',
     panelTop: '#111721',
     panelBase:'#070809',
-    logoMark: 'assets/crowd-mark-dark.png',
+    headerLogo: true,
+    logoMark: 'assets/crowd-mark.png',
     logoFull: 'assets/crowd-full.png',
     logoPrint:'assets/crowd-full-light.png',
     panelKey: 'eEjw789oEyVQ79xB',

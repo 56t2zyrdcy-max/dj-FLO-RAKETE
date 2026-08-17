@@ -171,6 +171,10 @@
     -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   /* brand slogan, straight off the logo - stays German in both languages */
+  .headerlogo{
+    display:block; width:min(300px, 82%); height:auto;
+    margin:0 auto 10px;
+  }
   .deck .slogan{
     font-family:'JetBrains Mono', monospace;
     font-size:11px; letter-spacing:3.5px; text-transform:uppercase;
@@ -427,7 +431,7 @@
      same database.
   ==================================================================
 -->
-<script src="djs.js?v=3"></script>
+<script src="djs.js?v=5"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -621,7 +625,19 @@
     const d = window.DJ;
     document.title = d.name + (d.slogan ? ' — ' + d.slogan : '');
     const h1 = document.querySelector('.deck h1');
-    if (h1) h1.textContent = d.name;
+    if (h1){
+      if (d.headerLogo && d.logoFull){
+        // The DJ's own lockup already spells the name, so show the artwork
+        // itself rather than setting the name a second time in type.
+        const img = document.createElement('img');
+        img.src = d.logoFull;
+        img.alt = d.name;
+        img.className = 'headerlogo';
+        h1.replaceWith(img);
+      } else {
+        h1.textContent = d.name;
+      }
+    }
     const sl = document.querySelector('.deck .slogan');
     if (sl){
       if (d.slogan) sl.textContent = d.slogan; else sl.remove();
