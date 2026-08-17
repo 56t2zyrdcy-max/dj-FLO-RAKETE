@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Ağı — Yönetim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#08070A; --panel:#141118; --line:rgba(247,244,250,0.10);
+    --foam:#F7F4FA; --muted:#9A93A3; --accent:#E4032E; --accent2:#FF8A3D;
+    --mint:#7CF5B6; --gold:#FFC857;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; padding:34px 18px 80px;
+    background:radial-gradient(ellipse at top, #1B0C13 0%, var(--void) 55%);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; color:var(--foam);
+  }
+  .wrap{max-width:1000px;margin:0 auto}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;
+           text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  h1{font-family:'Anton',sans-serif;font-weight:400;font-size:40px;margin:0 0 6px;letter-spacing:1px}
+  .lead{color:var(--muted);font-size:14px;margin:0 0 28px}
+
+  .gate{max-width:420px;margin:60px auto;text-align:center;
+        background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:34px 26px}
+  .gate p{color:var(--muted);font-size:14px;line-height:1.6}
+  button.primary{
+    padding:13px 24px;border-radius:12px;border:none;background:var(--accent);
+    color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;
+  }
+  button.primary:hover{filter:brightness(1.12)}
+  button.ghost{
+    padding:9px 16px;border-radius:10px;border:1px solid var(--line);
+    background:none;color:var(--foam);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+  button.ghost:hover{border-color:var(--accent)}
+  .gate .msg{margin-top:16px;font-size:13px;color:#ff9aa9;min-height:18px}
+
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:26px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .stat .n{font-family:'Anton',sans-serif;font-size:30px;line-height:1;color:var(--accent2)}
+  .stat .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;
+           text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+  .dj{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+      padding:20px 22px;margin-bottom:14px}
+  .dj-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
+  .dj-name{font-size:19px;font-weight:700}
+  .dj-slug{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+           border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+  .dj-nums{margin-left:auto;display:flex;gap:18px;text-align:right}
+  .dj-nums div{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+  .dj-nums b{display:block;font-family:'Anton',sans-serif;font-size:22px;color:var(--foam);font-weight:400}
+  .dj-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .dj-links a{
+    text-decoration:none;padding:9px 14px;border-radius:10px;border:1px solid var(--line);
+    color:var(--foam);font-size:13px;font-weight:600;
+  }
+  .dj-links a:hover{border-color:var(--accent);color:var(--accent2)}
+  .warn{margin-top:14px;font-size:12px;color:var(--gold);
+        background:rgba(255,200,87,.10);border:1px solid rgba(255,200,87,.35);
+        border-radius:10px;padding:9px 12px;line-height:1.5}
+  .uid{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+       margin-top:12px;word-break:break-all}
+  .uid b{color:var(--foam)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div id="gate" class="gate">
+    <div class="eyebrow">Yönetim</div>
+    <h1 style="font-size:28px">DJ Ağı</h1>
+    <p>Bu panel sadece platform sahibine açıktır. Devam etmek için Google hesabınla giriş yap.</p>
+    <button class="primary" id="signIn">Google ile giriş</button>
+    <div class="msg" id="gateMsg"></div>
+    <div class="uid" id="whoami"></div>
+  </div>
+
+  <div id="app" hidden>
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">Yönetim paneli</div>
+        <h1>DJ Ağı</h1>
+        <p class="lead" id="lead">Tüm DJ'ler, canlı istek sayıları ve linkleri tek ekranda.</p>
+      </div>
+      <button class="ghost" id="signOut">Çıkış</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n" id="sDjs">0</div><div class="l">DJ</div></div>
+      <div class="stat"><div class="n" id="sOpen">0</div><div class="l">Bekleyen istek</div></div>
+      <div class="stat"><div class="n" id="sToday">0</div><div class="l">Bugün toplam</div></div>
+      <div class="stat"><div class="n" id="sTips">€0</div><div class="l">Bugünkü bahşiş</div></div>
+    </div>
+
+    <div id="list"></div>
+    <div class="uid" id="whoami2"></div>
+  </div>
+</div>
+
+<script src="djs.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+(function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyBQtX7IpDsvhnYTRjyd6U07O0I4kkMYr3w",
+    authDomain: "djozkan-b30e6.firebaseapp.com",
+    databaseURL: "https://djozkan-b30e6-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "djozkan-b30e6",
+    storageBucket: "djozkan-b30e6.firebasestorage.app",
+    messagingSenderId: "699205281796",
+    appId: "1:699205281796:web:14d4c3d164ab8fcbc16d51"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const auth = firebase.auth();
+
+  const $ = id => document.getElementById(id);
+  const DAY = 24 * 60 * 60 * 1000;
+  const slugs = Object.keys(window.DJS);
+  const listeners = [];
+
+  $('signIn').addEventListener('click', () => {
+    $('gateMsg').textContent = '';
+    const p = new firebase.auth.GoogleAuthProvider();
+    p.setCustomParameters({ prompt: 'select_account' });
+    auth.signInWithPopup(p).catch(e => {
+      $('gateMsg').textContent = e && e.code === 'auth/popup-blocked'
+        ? 'Tarayıcı giriş penceresini engelledi. Bu sayfa için pop-up izni ver.'
+        : 'Giriş başarısız. Bağlantını kontrol et.';
+    });
+  });
+  $('signOut').addEventListener('click', () => auth.signOut());
+
+  function stopAll(){
+    listeners.forEach(([ref, cb]) => ref.off('value', cb));
+    listeners.length = 0;
+  }
+
+  function lock(msg, user){
+    stopAll();
+    $('app').hidden = true;
+    $('gate').hidden = false;
+    $('gateMsg').textContent = msg || '';
+    $('whoami').innerHTML = user
+      ? 'Giriş yapılan hesap: <b>' + (user.email || user.uid) + '</b><br>UID: <b>' + user.uid + '</b>'
+      : '';
+  }
+
+  function unlock(user){
+    $('gate').hidden = true;
+    $('app').hidden = false;
+    $('whoami2').innerHTML = 'Platform sahibi: <b>' + (user.email || user.uid) + '</b> · UID: <b>' + user.uid + '</b>';
+    build(user);
+  }
+
+  function build(user){
+    stopAll();
+    $('sDjs').textContent = slugs.length;
+    const state = {};
+    $('list').innerHTML = '';
+
+    slugs.forEach(slug => {
+      const d = window.DJS[slug];
+      state[slug] = { open: 0, today: 0, tips: 0, live: false };
+
+      const card = document.createElement('div');
+      card.className = 'dj';
+      card.innerHTML =
+        '<div class="dj-head">' +
+          '<span class="dot" style="background:' + (d.accent || '#888') + '"></span>' +
+          '<span class="dj-name">' + d.name + '</span>' +
+          '<span class="dj-slug">?dj=' + slug + '</span>' +
+          '<div class="dj-nums">' +
+            '<div><b id="o-' + slug + '">0</b>bekleyen</div>' +
+            '<div><b id="t-' + slug + '">0</b>bugün</div>' +
+            '<div><b id="p-' + slug + '">€0</b>bahşiş</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="dj-links">' +
+          '<a href="index.html?dj=' + slug + '" target="_blank">Misafir sayfası</a>' +
+          '<a href="admin.html?dj=' + slug + '" target="_blank">DJ paneli</a>' +
+          '<a href="qr.html?dj=' + slug + '" target="_blank">QR üret</a>' +
+        '</div>' +
+        (d.ownerUid ? '' :
+          '<div class="warn">Bu DJ\'nin hesabı henüz tanımlı değil (<code>ownerUid</code> boş) — ' +
+          'paneline sadece sen girebilirsin. DJ bir kez giriş yapınca UID\'sini djs.js\'e yaz.</div>');
+      $('list').appendChild(card);
+
+      const ref = db.ref(window.djRoot(slug) + '/requests');
+      const cb = ref.on('value', snap => {
+        let open = 0, today = 0, tips = 0;
+        const cutoff = Date.now() - DAY;
+        snap.forEach(ch => {
+          const v = ch.val() || {};
+          if (v.removed) return;
+          if (!v.played && !v.rejected) open++;
+          if ((v.createdAt || 0) > cutoff){
+            today++;
+            if (v.tipStatus === 'paid') tips += Number(v.amount) || 0;
+          }
+        });
+        state[slug] = { open, today, tips };
+        const o = $('o-' + slug), t = $('t-' + slug), p = $('p-' + slug);
+        if (o) o.textContent = open;
+        if (t) t.textContent = today;
+        if (p) p.textContent = '€' + tips;
+        totals();
+      }, err => {
+        console.warn('Read failed for ' + slug + ':', err && err.code);
+      });
+      listeners.push([ref, cb]);
+    });
+
+    function totals(){
+      let o = 0, t = 0, p = 0;
+      Object.values(state).forEach(v => { o += v.open || 0; t += v.today || 0; p += v.tips || 0; });
+      $('sOpen').textContent = o;
+      $('sToday').textContent = t;
+      $('sTips').textContent = '€' + p;
+    }
+    totals();
+  }
+
+  auth.onAuthStateChanged(user => {
+    if (!user){ lock('', null); return; }
+
+    // The database decides who the owner is, not this file. If the rules
+    // let this account read a DJ's queue, it belongs here.
+    db.ref(window.djRoot(slugs[0]) + '/requests').limitToLast(1).once('value')
+      .then(() => unlock(user))
+      .catch(e => {
+        console.warn('Access denied:', e && e.code);
+        lock('Bu hesabın yönetim paneline erişimi yok. UID\'yi kurallara ekleyip tekrar dene.', user);
+        // stay signed in so the UID stays visible for copying into the rules
+      });
+  });
+})();
+</script>
+</body>
+</html>

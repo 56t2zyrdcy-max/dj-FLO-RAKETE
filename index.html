@@ -10,7 +10,8 @@
   scans faster and from further away. It sends every visitor straight to
   the request page.
 -->
-<meta http-equiv="refresh" content="0; url=guest.html">
+<!-- no meta refresh: the ?dj= parameter has to be carried across,
+       which only the script below can do reliably -->
 <link rel="canonical" href="guest.html">
 <style>
   html,body{
@@ -43,6 +44,13 @@
     <div class="slogan">Musik für deine Fete</div>
     <noscript><a href="guest.html">Weiter zum Songwunsch →</a></noscript>
   </div>
-  <script>location.replace('guest.html');</script>
+  <script>
+  // Keep whichever ?dj=... the QR code carried, so one short link per DJ
+  // is all that ever needs printing.
+  (function(){
+    var q = location.search || '';
+    location.replace('guest.html' + q);
+  })();
+</script>
 </body>
 </html>

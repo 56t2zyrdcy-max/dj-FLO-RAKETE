@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DJ Flo Rakete — QR Generator</title>
+<script src="djs.js"></script>
 <script>
 /*! qrcode-generator v2.0.4 - Kazuhiko Arase - MIT licence. Bundled so the
     generator works fully offline, with no CDN and no tracking. */
@@ -2373,7 +2374,7 @@ var qrcode = function() {
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">DJ Flo Rakete</div>
+  <div class="eyebrow" id="djEyebrow"></div>
   <h1>QR-Generator</h1>
   <p class="lead">Adresini yapıştır → QR kodu ve baskıya hazır masa afişi anında hazır. / Adresse eintragen und QR + Aushang herunterladen.</p>
 
@@ -2392,7 +2393,7 @@ var qrcode = function() {
   <div class="grid">
     <div class="panel previewbox">
       <div class="cap">QR-Code</div>
-      <canvas id="qrCanvas" width="720" height="720" style="width:280px"></canvas>
+      <canvas id="qrCanvas" width="1024" height="1024" style="width:280px"></canvas>
     </div>
     <div class="panel previewbox">
       <div class="cap">Aushang A5 · druckfertig</div>
@@ -2402,7 +2403,8 @@ var qrcode = function() {
 </div>
 
 <script>
-const LOGO_LIGHT = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2OTAgMzIwIiB3aWR0aD0iNjkwIiBoZWlnaHQ9IjMyMCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJESiBGbG8gUmFrZXRlIOKAlCBNdXNpayBmw7xyIGRlaW5lIEZldGUiPgogIDwhLS0gcmVkIGxvd2VyY2FzZSBkIC0tPgogIDxwYXRoIGZpbGw9IiNFNDAzMkUiIGQ9Ik0xNTIgNDRoMzZ2MTc2aC0zNnYtMTljLTEyIDE0LTI4IDIyLTQ4IDIyLTQwIDAtNjktMzItNjktNzZzMjktNzYgNjktNzZjMjAgMCAzNiA4IDQ4IDIyVjQ0em0tNDIgNzljLTIxIDAtMzcgMTctMzcgNDJzMTYgNDIgMzcgNDIgMzctMTcgMzctNDItMTYtNDItMzctNDJ6Ii8+CiAgPCEtLSBqIC0tPgogIDxwYXRoIGZpbGw9IiNFNDAzMkUiIGQ9Ik0yMzggMTAwaDM0djExMWMwIDM2LTIwIDU4LTU1IDYxbC00LTMxYzE4LTMgMjUtMTMgMjUtMzJWMTAweiIvPgogIDxjaXJjbGUgZmlsbD0iI0U0MDMyRSIgY3g9IjI1NSIgY3k9IjYxIiByPSIxOSIvPgogIDwhLS0gZmFkZXIgbGluZXMgKyBtYXJrZXJzIC0tPgogIDxnIHN0cm9rZT0iI0U0MDMyRSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuOCI+CiAgICA8bGluZSB4MT0iMjEyIiB5MT0iMjAiIHgyPSIyMTIiIHkyPSIyMDYiLz4KICAgIDxsaW5lIHgxPSIyMzUiIHkxPSIzNCIgeDI9IjIzNSIgeTI9IjIyMCIvPgogIDwvZz4KICA8ZyBmaWxsPSIjRTQwMzJFIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iMjEyLDc2IDIyMyw5MCAyMTIsMTA0IDIwMSw5MCIvPgogICAgPHBvbHlnb24gcG9pbnRzPSIyMTIsMTQ2IDIyMywxNjAgMjEyLDE3NCAyMDEsMTYwIi8+CiAgICA8cG9seWdvbiBwb2ludHM9IjIzNSwxODYgMjQ2LDIwMCAyMzUsMjE0IDIyNCwyMDAiLz4KICA8L2c+CiAgPCEtLSBGTCAtLT4KICA8dGV4dCB4PSIyOTIiIHk9IjE1MiIgZmlsbD0iIzExMTExMSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iOTAwIgogICAgICAgIGZvbnQtc2l6ZT0iMTIwIiB0ZXh0TGVuZ3RoPSIxOTYiIGxlbmd0aEFkanVzdD0ic3BhY2luZ0FuZEdseXBocyI+Rkw8L3RleHQ+CiAgPCEtLSB2aW55bCBPIHdpdGggaGVhZHBob25lcyAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1NjIsMTAwKSI+CiAgICA8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMxMTExMTEiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZD0iTS02OCA2YTY4IDY4IDAgMCAxIDEzNiAwIi8+CiAgICA8cmVjdCBmaWxsPSIjMTExMTExIiB4PSItNzgiIHk9IjAiIHdpZHRoPSIyMSIgaGVpZ2h0PSIzOCIgcng9IjEwIi8+CiAgICA8cmVjdCBmaWxsPSIjMTExMTExIiB4PSI1NyIgeT0iMCIgd2lkdGg9IjIxIiBoZWlnaHQ9IjM4IiByeD0iMTAiLz4KICAgIDxjaXJjbGUgZmlsbD0iIzExMTExMSIgcj0iNTQiLz4KICAgIDxjaXJjbGUgZmlsbD0iIzBBMEEwQyIgcj0iMzUiLz4KICAgIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzBBMEEwQyIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjUiPjxjaXJjbGUgcj0iNDYiLz48Y2lyY2xlIHI9IjQxIi8+PC9nPgogICAgPGNpcmNsZSBmaWxsPSIjMTExMTExIiByPSIxMSIvPgogICAgPGNpcmNsZSBmaWxsPSIjMEEwQTBDIiByPSIzLjUiLz4KICA8L2c+CiAgPCEtLSBSQUtFVEUgLS0+CiAgPHRleHQgeD0iMjkyIiB5PSIyNTAiIGZpbGw9IiMxMTExMTEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIKICAgICAgICBmb250LXNpemU9Ijg4IiB0ZXh0TGVuZ3RoPSIzMjQiIGxlbmd0aEFkanVzdD0ic3BhY2luZ0FuZEdseXBocyI+UkFLRVRFPC90ZXh0PgogIDwhLS0gdGFnbGluZSAtLT4KICA8dGV4dCB4PSIyOTQiIHk9IjI5MCIgZmlsbD0iI0U0MDMyRSIgZm9udC1mYW1pbHk9IkFyaWFsLCBIZWx2ZXRpY2EsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiCiAgICAgICAgZm9udC1zaXplPSIyNiIgdGV4dExlbmd0aD0iMzIwIiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiPk1VU0lLIEbDnFIgREVJTkUgRkVURTwvdGV4dD4KPC9zdmc+Cg==";
+const DJ = window.resolveDj();
+const LOGO_LIGHT = DJ.logoPrint || DJ.logoFull;
 const $ = id => document.getElementById(id);
 const warn = (msg, ok) => { const w=$('warn'); if(!msg){w.hidden=true;return;} w.hidden=false; w.innerHTML=msg; w.style.color = ok? '#7CF5B6':'#ffd9de'; };
 
@@ -2426,6 +2428,23 @@ function loadImg(src){
   return new Promise((res, rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; });
 }
 
+// The centre badge carries the DJ's initials-style short name. It is
+// drawn to a fixed width so a long name shrinks instead of spilling over
+// the code and making it unreadable.
+function drawBadge(c, cx, top, size){
+  const words = (DJ.name || '').replace(/^DJ\s+/i, '').trim().split(/\s+/).slice(0, 2);
+  const maxW = size - 46;
+  c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+  const sizes = words.length > 1 ? [size*0.27, size*0.17] : [size*0.3];
+  words.forEach((w, i) => {
+    c.font = '900 ' + Math.round(sizes[i]) + 'px Arial Black, Arial, sans-serif';
+    let txt = w.toUpperCase();
+    let m = c.measureText(txt).width;
+    if (m > maxW) c.font = '900 ' + Math.round(sizes[i] * maxW / m) + 'px Arial Black, Arial, sans-serif';
+    c.fillText(txt, cx, top + (words.length > 1 ? (i ? size*0.72 : size*0.45) : size*0.62));
+  });
+}
+
 function roundRect(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
 
 async function render(){
@@ -2441,18 +2460,19 @@ async function render(){
 
   // --- plain QR canvas ---
   const qc = $('qrCanvas'), q = qc.getContext('2d');
-  q.fillStyle = '#fff'; q.fillRect(0,0,720,720);
+  const QC = 1024;
+  q.fillStyle = '#fff'; q.fillRect(0,0,QC,QC);
   // A QR code MUST keep a white quiet zone around it or scanners cannot find
   // the finder patterns. Without this inset the exported PNG is unreadable.
-  const QUIET = 48;
-  q.drawImage(qr, QUIET, QUIET, 720 - QUIET*2, 720 - QUIET*2);
-  // centre badge so the code still reads (error level H tolerates it)
-  const bs = 150, bx = (720-bs)/2;
+  const QUIET = 64;
+  q.drawImage(qr, QUIET, QUIET, QC - QUIET*2, QC - QUIET*2);
+  // Centre badge. Error level H tolerates a covered centre, but only a small
+  // one — keep it under ~12% of the code area or scanning starts to fail.
+  const bs = Math.round(QC * 0.17), bx = (QC-bs)/2;
   q.fillStyle = '#fff'; roundRect(q,bx,bx,bs,bs,26); q.fill();
-  q.fillStyle = '#E4032E'; roundRect(q,bx+10,bx+10,bs-20,bs-20,20); q.fill();
-  q.fillStyle = '#fff'; q.textAlign='center'; q.textBaseline='middle';
-  q.font = '900 40px Arial Black, Arial, sans-serif'; q.fillText('FLO', 360, 345);
-  q.font = '900 25px Arial Black, Arial, sans-serif'; q.fillText('RAKETE', 360, 385);
+  q.fillStyle = DJ.accent || '#E4032E'; roundRect(q,bx+10,bx+10,bs-20,bs-20,20); q.fill();
+  q.fillStyle = '#fff'; q.textAlign='center';
+  drawBadge(q, QC/2, bx, bs);
 
   // --- A5 poster ---
   const pc = $('poster'), p = pc.getContext('2d');
@@ -2473,28 +2493,31 @@ async function render(){
   p.font = 'bold 62px Arial, Helvetica, sans-serif';
   p.fillText('QR scannen · Song wünschen', W/2, 920);
 
-  const qs = 940, qx = (W-qs)/2, qy = 1010;
-  p.fillStyle = '#111111'; roundRect(p,qx-24,qy-24,qs+48,qs+48,34); p.fill();
-  p.fillStyle = '#ffffff'; roundRect(p,qx-12,qy-12,qs+24,qs+24,26); p.fill();
-  p.drawImage(qr, qx, qy, qs, qs);
-  const cbs = 190, cbx = qx + (qs-cbs)/2, cby = qy + (qs-cbs)/2;
-  p.fillStyle = '#fff'; roundRect(p,cbx,cby,cbs,cbs,30); p.fill();
-  p.fillStyle = '#E4032E'; roundRect(p,cbx+12,cby+12,cbs-24,cbs-24,22); p.fill();
-  p.fillStyle = '#fff';
-  p.font = '900 50px Arial Black, Arial, sans-serif'; p.fillText('FLO', W/2, cby+82);
-  p.font = '900 31px Arial Black, Arial, sans-serif'; p.fillText('RAKETE', W/2, cby+132);
+  // qs is the white card; the code itself sits inset inside it so the
+  // quiet zone scales with the code. A 4-module margin is the spec
+  // minimum and is what lets a phone lock on from across the room.
+  const qs = 1180, qx = (W-qs)/2, qy = 1000;
+  const QPAD = Math.round(qs * 0.09);
+  p.fillStyle = '#111111'; roundRect(p,qx-16,qy-16,qs+32,qs+32,36); p.fill();
+  p.fillStyle = '#ffffff'; roundRect(p,qx,qy,qs,qs,28); p.fill();
+  p.drawImage(qr, qx+QPAD, qy+QPAD, qs-QPAD*2, qs-QPAD*2);
+  // Deliberately no logo badge in the middle here: the full lockup is
+  // already printed above, and a clear code scans from much further away.
 
   p.fillStyle = '#555555';
   p.font = '500 44px Arial, Helvetica, sans-serif';
   const shown = url.replace(/^https?:\/\//,'');
-  p.fillText(shown.length > 46 ? shown.slice(0,45)+'…' : shown, W/2, qy+qs+110);
+  p.fillText(shown.length > 46 ? shown.slice(0,45)+'…' : shown, W/2, qy+qs+95);
 
   p.fillStyle = '#111111';
   p.font = 'bold 52px Arial, Helvetica, sans-serif';
-  p.fillText('Alle 30 Min. ein Wunsch gratis · Mit Trinkgeld sofort', W/2, qy+qs+215);
+  const TIP_LINE = DJ.tips
+    ? 'Alle 30 Min. ein Wunsch gratis · Mit Trinkgeld sofort'
+    : 'Alle 30 Minuten ein Songwunsch — kostenlos';
+  p.fillText(TIP_LINE, W/2, qy+qs+180);
   p.fillStyle = '#E4032E';
   p.font = '900 58px Arial Black, Arial, sans-serif';
-  p.fillText('MUSIK FÜR DEINE FETE', W/2, qy+qs+300);
+  p.fillText((DJ.slogan || '').toUpperCase(), W/2, qy+qs+255);
 
   warn('Hazır. / Fertig — jetzt herunterladen oder drucken.', true);
 }
@@ -2517,10 +2540,14 @@ $('printPoster').addEventListener('click', () => {
   w.onload = () => w.print();
 });
 
-// prefill with the guest page next to this file, if hosted
+// brand the tool for whichever DJ was asked for
+$('djEyebrow').textContent = DJ.name;
+document.title = DJ.name + ' — QR Generator';
+
+// prefill with this DJ's guest link, if hosted
 try{
   if (location.protocol.startsWith('http')){
-    $('url').value = location.href.replace(/\/qr\.html.*$/, '/guest.html');
+    $('url').value = location.href.replace(/\/qr\.html.*$/, '/') + '?dj=' + DJ.slug;
   }
 }catch(e){}
 </script>
