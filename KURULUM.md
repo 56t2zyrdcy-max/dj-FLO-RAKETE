@@ -106,15 +106,26 @@ hiçbir veri gitmez.
 
 ### PayPal / banka — bahşiş alma
 
-Şu an devre dışı. Sayfada "Setup incomplete" uyarısı bunun için çıkıyor.
+**Şu an tamamen kapalı.** Bahşiş bölümü sayfada hiç görünmüyor; sistem saf
+"ücretsiz istek" modunda çalışıyor. Tek bir anahtarla kontrol ediliyor:
+
+```js
+window.TIPS_ENABLED = false;   // guest.html
+```
+
 Açmak için:
 
 1. https://developer.paypal.com/dashboard/applications → **Live** sekmesi
 2. Yeni REST app oluştur → **Client ID**'yi kopyala
 3. `guest.html` içinde `const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID";`
-   satırını bul, kendi ID'sini yaz
+   satırına **Flo'nun kendi ID'sini** yaz
+4. Sonra `window.TIPS_ENABLED = true;` yap
 
-Para **doğrudan Flo'nun PayPal hesabına** gider; arada senin hesabın yoktur.
+> ⚠️ **Başka birinin PayPal ID'sini buraya yazma.** ID doğru değilse para yanlış
+> hesaba gider ve bunu geri almak kolay olmaz. Bu yüzden demo aşamasında bahşiş
+> tamamen kapalı bırakıldı — senin hesabın da dahil hiçbir hesap bağlı değil.
+
+Para **doğrudan Flo'nun PayPal hesabına** gider; arada kimse yoktur.
 Minimum bahşiş `MIN_TIP` sabitinden (şu an €10) değiştirilir.
 
 ### Sosyal medya linkleri

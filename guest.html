@@ -395,7 +395,7 @@
   <div class="actions">
     <div class="cooldown" id="cooldownBox">
       <span class="clock" id="cooldownClock">30:00</span>
-      <span id="cooldownText">This phone already sent a free request. You can send the next one when the clock runs out — or add a tip (min €10) to send right away.</span>
+      <span id="cooldownText">This phone already sent a request. You can send the next one when the clock runs out.</span>
     </div>
     <div class="cooldown reject" id="rejectBox" role="alert">
       <span id="rejectText"></span>
@@ -484,6 +484,14 @@
   (get one at https://developer.paypal.com/dashboard/applications).
 -->
 <script>
+  // ===================== TIPS / PAYMENTS =====================
+  // false = the tip + PayPal section is hidden and the page runs as a pure
+  // free-request system. Flip to true ONLY after PAYPAL_CLIENT_ID below holds
+  // DJ Flo Rakete's OWN live Client ID — otherwise guests would be paying
+  // into somebody else's account.
+  window.TIPS_ENABLED = false;
+  const TIPS_ENABLED = window.TIPS_ENABLED === true;
+
   const PAYPAL_CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID";
   window.__paypalReady = false;
   window.__paypalLocale = '';
@@ -523,6 +531,7 @@
 
 <script>
 (function(){
+  const TIPS_ENABLED = window.TIPS_ENABLED === true;   // set by the switch in the block above
   const songInput = document.getElementById('songInput');
   const tipButtons = document.querySelectorAll('.tip-btn');
   const customAmt = document.getElementById('customAmt');
@@ -544,14 +553,14 @@
       sub: 'Wünsch dir deinen Song — ich leg ihn für dich auf.',
       note: 'Wünsche werden in der Reihenfolge gespielt, die zur Stimmung passt — nicht jeder Song passt in jeden Moment.',
       songLabel: 'Interpret & Song', songPh: 'z. B. Fred again.. – Marea',
-      hint: 'Alle 30 Minuten eine kostenlose Anfrage. Mit Trinkgeld geht dein Song sofort durch.',
+      hint: 'Alle 30 Minuten ein Wunsch. Danach ist der nächste wieder frei.',
       tipLabel: 'Trinkgeld hinzufügen (optional)', custom: 'Anderer Betrag', customPh: '€ Betrag — min. €10',
       selectedTip: 'Gewähltes Trinkgeld',
-      cooldownText: 'Dieses Handy hat schon eine kostenlose Anfrage gesendet. Wenn die Uhr abläuft, geht die nächste — oder sende mit Trinkgeld (min. €10) sofort.',
+      cooldownText: 'Dieses Handy hat schon einen Wunsch gesendet. Wenn die Uhr abläuft, geht der nächste.',
       sendFree: 'Anfrage senden', sendFreeAlt: 'Oder ohne Trinkgeld senden',
       errSong: 'Bitte zuerst Interpret und Songtitel eingeben.',
       dupSong: 'Dieser Song steht schon in der Liste. Wähle einen anderen.',
-      cooldownMsg: 'Dieses Handy hat schon eine kostenlose Anfrage — noch {left}, oder sende mit Trinkgeld (min. €10) sofort.',
+      cooldownMsg: 'Dieses Handy hat schon einen Wunsch gesendet — noch {left}.',
       checking: 'Prüfe…', sending: 'Anfrage wird gesendet…', sent: 'Anfrage gesendet. Der DJ hat sie 🎧',
       wrong: 'Etwas ist schiefgelaufen. Versuch es nochmal.',
       setup: 'Die Einrichtung ist noch nicht fertig — die Anfrage konnte nicht gespeichert werden.',
@@ -569,14 +578,14 @@
       sub: "Wish for your song — I'll spin it for you.",
       note: "Requests are played when they fit the vibe — not every song fits every moment.",
       songLabel: 'Artist & Song', songPh: 'e.g. Fred again.. – Marea',
-      hint: 'One free request every 30 minutes. With a tip your song goes through right away.',
+      hint: 'One request every 30 minutes. After that the next one is free again.',
       tipLabel: 'Add a tip (optional)', custom: 'Custom', customPh: '€ amount — min €10',
       selectedTip: 'Selected tip',
-      cooldownText: 'This phone already sent a free request. You can send the next one when the clock runs out — or add a tip (min €10) to send right away.',
+      cooldownText: 'This phone already sent a request. You can send the next one when the clock runs out.',
       sendFree: 'Send request', sendFreeAlt: 'Or send without a tip',
       errSong: 'Add the artist and song name first.',
       dupSong: "That song is already in tonight's queue. Pick another one.",
-      cooldownMsg: 'This phone already sent a free request — {left} left, or add a tip (min €10) to send now.',
+      cooldownMsg: 'This phone already sent a request — {left} left.',
       checking: 'Checking…', sending: 'Sending your request…', sent: 'Request sent. The DJ has it now 🎧',
       wrong: 'Something went wrong. Try again.',
       setup: "Setup isn't finished yet — this request could not be saved.",
@@ -865,8 +874,17 @@
 
   // Show a friendly banner instead of letting the page silently fail
   // when Firebase and/or PayPal haven't been configured yet.
-  if (!firebaseReady || PAYPAL_CLIENT_ID.includes('YOUR_')){
+  if (!firebaseReady || (TIPS_ENABLED && PAYPAL_CLIENT_ID.includes('YOUR_'))){
     configWarning.hidden = false;
+    // With tips switched off, only the database matters — say so plainly
+    // instead of naming PayPal, which isn't part of this setup yet.
+    if (!TIPS_ENABLED){
+      configWarning.innerHTML = LANG === 'de'
+        ? '\u26A0\uFE0F <b>Einrichtung l\u00e4uft:</b> Die Datenbank ist noch nicht verbunden \u2014 '
+          + 'W\u00fcnsche werden gerade nicht gespeichert.'
+        : '\u26A0\uFE0F <b>Setup in progress:</b> the database is not connected yet \u2014 '
+          + 'requests are not being saved.';
+    }
   }
 
   function setStatus(msg, type){
@@ -881,9 +899,23 @@
   }
 
   function updatePaypalVisibility(){
+    if (!TIPS_ENABLED){
+      paypalContainer.style.display = 'none';
+      sendFreeBtn.textContent = T().sendFree;
+      return;
+    }
     // The payment button only appears for a valid tip (€10 or more).
     paypalContainer.style.display = selectedAmount >= MIN_TIP ? 'block' : 'none';
     sendFreeBtn.textContent = selectedAmount >= MIN_TIP ? T().sendFreeAlt : T().sendFree;
+  }
+
+  // Hide the tip half of the ticket when payments are off, so the page reads
+  // as a clean free-request form. The nodes stay in the DOM on purpose —
+  // applyLang() and setAmount() still write into them.
+  if (!TIPS_ENABLED){
+    document.querySelectorAll('.ticket-bottom, .perforation')
+            .forEach(el => { el.style.display = 'none'; });
+    selectedAmount = 0;
   }
 
   function setAmount(amt){
