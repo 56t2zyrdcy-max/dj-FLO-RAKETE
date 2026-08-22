@@ -79,6 +79,29 @@ window.DJS = {
     socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
     noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen — nicht jeder Song passt in jeden Moment.',
     noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
+  },
+
+  alexvanp: {
+    slug:     'alexvanp',
+    name:     'DJ ALEX VAN P',
+    slogan:   '',
+    accent:   '#F2A65A',
+    accent2:  '#7FA8D9',
+    bgTop:    '#111A2B',
+    bgBase:   '#070A10',
+    panelTop: '#101827',
+    panelBase:'#06080D',
+    headerLogo: true,
+    logoMark: 'assets/alexvanp-mark.png',
+    logoFull: 'assets/alexvanp-full.png',
+    logoPrint:'assets/alexvanp-full-light.png',
+    panelKey: 'cHgaP0neTXOSTfqH',
+    ownerUid: '',
+    tips:     false,
+    paypal:   '',
+    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
+    noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen — nicht jeder Song passt in jeden Moment.',
+    noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
   }
 
 };
