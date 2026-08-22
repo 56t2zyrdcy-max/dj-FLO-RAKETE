@@ -53,7 +53,10 @@ window.DJS = {
     ownerUid: '',
     tips:     false,
     paypal:   '',
-    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
+    socials:  { instagram: 'https://www.instagram.com/dj_flo_rakete/',
+                spotify: '', apple: '', soundcloud: '', youtube: '',
+                reviews: 'https://g.page/r/CSKmSNrdN3MJEAE/review',
+                shop:    'https://thmn.to/thocf/zvmxd572l2' },
     noteDe:   'Wünsche werden in der Reihenfolge gespielt, die zur Stimmung passt — nicht jeder Song passt in jeden Moment.',
     noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
   },
@@ -76,7 +79,7 @@ window.DJS = {
     ownerUid: '',
     tips:     false,
     paypal:   '',
-    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
+    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '', reviews: '', shop: '' },
     noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen — nicht jeder Song passt in jeden Moment.',
     noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
   },
@@ -99,7 +102,7 @@ window.DJS = {
     ownerUid: '',
     tips:     false,
     paypal:   '',
-    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '' },
+    socials:  { instagram: '', spotify: '', apple: '', soundcloud: '', youtube: '', reviews: '', shop: '' },
     noteDe:   'Wünsche werden gespielt, wenn sie zur Stimmung passen — nicht jeder Song passt in jeden Moment.',
     noteEn:   'Requests are played when they fit the vibe — not every song fits every moment.'
   }
